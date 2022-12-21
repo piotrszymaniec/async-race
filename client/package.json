@@ -1,5 +1,5 @@
 {
-  "name": "asyn-race task",
+  "name": "asyn-race-task",
   "version": "1.0.0",
   "description": "Asyn-race task for rs-school frontend course",
   "main": "index.ts",
