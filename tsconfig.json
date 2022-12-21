@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "lib": [
+      "es5",
+      "es6",
+      "dom"
+    ],
+    "allowSyntheticDefaultImports": true,
+    "noImplicitAny": true,
+    "module": "es6",
+    "target": "es5",
+    "allowJs": true,
+    "jsx": "react"
+  },
+  "files": [
+    "./src/index.ts",
+    "./module.d.ts"
+  ]
+}
