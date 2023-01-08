@@ -21,6 +21,7 @@
     "@webpack-cli/generators": "^3.0.1",
     "css-loader": "^6.7.1",
     "eslint": "^8.30.0",
+    "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-plugin-react": "^7.31.11",
     "html-webpack-plugin": "^5.5.0",
     "mini-css-extract-plugin": "^2.6.1",
