@@ -19,7 +19,7 @@ export default function Garage() {
   const [page, setPage] = useState(1)
   const [startRace, setStartRace] = useState<boolean>(false)
 
-  const [start, setStart] = useState<boolean>(false)
+  const results:Array<string|number> = []
 
   // useEffect(()=>{
   // Promise.allSettled(carList.map(carData => {        
@@ -82,7 +82,18 @@ export default function Garage() {
       setStartRace(true)
       
     }}
-    >Race</button>{carList.map(car => {return (<GarageItem start={startRace} onStart={()=>{}} onFinish={(res)=>console.log(res)} carData={car} key={car.id} />)})}</div>
+    >Race</button>{carList.map((car,index) => {return (<GarageItem start={startRace} onStart={()=>{
+      results[index] = 'start'
+      console.log(JSON.stringify(results))
+    }
+    } 
+    onFinish={(res)=>{
+      results[index]=res
+      console.log(JSON.stringify(results))
+      if (!results.find(item => item === 'start')) {
+        console.log('finish')
+      }
+      }} carData={car} key={car.id} />)})}</div>
     {page>1? <button className="pageButton" onClick={()=>{
       //todo refactor ugly code
       const tmp = page-1
