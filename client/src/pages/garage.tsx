@@ -1,5 +1,6 @@
 import React, { FormEvent, useEffect, useState } from "react"
 import ICar from "../ICar"
+import GarageItem from '../components/GarageItem'
 import CarSelectionWidget from "../components/car-selection-widget"
 import CarFactoryWidget from "../components/CarFactoryWidget"
 import "./garage.scss"
@@ -61,7 +62,7 @@ export default function Garage() {
       <h3>Page number: {page}</h3>
       
     </nav>
-    <div>{carList.map(el => {return (<div key={el.id}>{el.name}</div>)})}</div>
+    <div>{carList.map(el => {return (<GarageItem key={el.id}  />)})}</div>
     {page>1? <button className="pageButton" onClick={()=>{
       //todo refactor ugly code
       const tmp = page-1
