@@ -15,12 +15,34 @@ export default function Garage() {
   }
   const [carList, setCarList] = useState<Array<ICar>>([])
   const [carCount, setCarCount] = useState(0)
-  const [carSpeed, setCarSpeed] = useState<ICarSpeed>({})  
+  
   const [page, setPage] = useState(1)
+  const [startRace, setStartRace] = useState<boolean>(false)
 
   const onSelect = ({ }) => {
 
   }
+  useEffect(()=>{
+  Promise.allSettled(carList.map(carData => {        
+       return fetch(`http://localhost:3000/engine?status=started&id=${carData.id}`,{method: "PATCH"}).then(res=>{
+          console.log(res.status)
+          return res.json()
+        }).then(
+          (v) => {
+             return fetch(`http://localhost:3000/engine?status=drive&id=${carData.id}`,{method: "PATCH"}).then(res=>{
+              console.log(res.status)
+              if(res.status ===200) {
+                return v.velocity
+              } else {
+                return 'fail'
+              }
+            })
+          }
+        )      
+      })
+      ).then(res=>console.log(res))
+
+  },[startRace])
 
   useEffect(()=>{        
     const urlCars = "http://localhost:3000/garage?_page=1&_limit=7"    
@@ -32,10 +54,6 @@ export default function Garage() {
     }).then(data => setCarList(data))
     
     const urlCarSpeed = "http://localhost:3000/engine?id=1&status=started"
-    //get car velocity
-    // fetch(urlCarSpeed, {
-    //   method: "PATCH"
-    // }).then(res=>res.json()).then(data => setCarSpeed(data)) 
   },[carCount])
   function getPage(page:number) {
     //fetch new cars list ?
@@ -47,7 +65,6 @@ export default function Garage() {
   return (
   <div>
     <nav>
-      {}
       <CarFactoryWidget 
       //i want to preserve old number of cars already in garage and show cars added with "create many cards" button i real time
       //but now car counter is overriten by newly created cars
@@ -62,7 +79,10 @@ export default function Garage() {
       <h3>Page number: {page}</h3>
       
     </nav>
-    <div>{carList.map(car => {return (<GarageItem carData={car} key={car.id} />)})}</div>
+    <div><button onClick={()=>{
+      setStartRace(true)
+    }}
+    >Race</button>{carList.map(car => {return (<GarageItem carData={car} key={car.id} />)})}</div>
     {page>1? <button className="pageButton" onClick={()=>{
       //todo refactor ugly code
       const tmp = page-1

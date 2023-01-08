@@ -1,0 +1,22 @@
+.car {
+  width: 50px;
+  height: 10px;
+  background-color: blueviolet;
+
+}
+
+.animate {
+  animation: slide linear;
+  animation-fill-mode: forwards;
+  animation-iteration-count: 1;
+}
+
+@keyframes slide {
+  from {
+    margin-left: 0%;
+  }
+
+  to {
+    margin-left: calc(100% - 50px);
+  }
+}
