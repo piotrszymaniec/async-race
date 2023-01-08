@@ -62,7 +62,7 @@ export default function Garage() {
       <h3>Page number: {page}</h3>
       
     </nav>
-    <div>{carList.map(el => {return (<GarageItem key={el.id}  />)})}</div>
+    <div>{carList.map(car => {return (<GarageItem carData={car} key={car.id} />)})}</div>
     {page>1? <button className="pageButton" onClick={()=>{
       //todo refactor ugly code
       const tmp = page-1
