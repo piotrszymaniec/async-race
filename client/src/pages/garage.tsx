@@ -19,30 +19,29 @@ export default function Garage() {
   const [page, setPage] = useState(1)
   const [startRace, setStartRace] = useState<boolean>(false)
 
-  const onSelect = ({ }) => {
+  const [start, setStart] = useState<boolean>(false)
 
-  }
-  useEffect(()=>{
-  Promise.allSettled(carList.map(carData => {        
-       return fetch(`http://localhost:3000/engine?status=started&id=${carData.id}`,{method: "PATCH"}).then(res=>{
-          console.log(res.status)
-          return res.json()
-        }).then(
-          (v) => {
-             return fetch(`http://localhost:3000/engine?status=drive&id=${carData.id}`,{method: "PATCH"}).then(res=>{
-              console.log(res.status)
-              if(res.status ===200) {
-                return v.velocity
-              } else {
-                return 'fail'
-              }
-            })
-          }
-        )      
-      })
-      ).then(res=>console.log(res))
+  // useEffect(()=>{
+  // Promise.allSettled(carList.map(carData => {        
+  //      return fetch(`http://localhost:3000/engine?status=started&id=${carData.id}`,{method: "PATCH"}).then(res=>{
+  //         console.log(res.status)
+  //         return res.json()
+  //       }).then(
+  //         (v) => {
+  //            return fetch(`http://localhost:3000/engine?status=drive&id=${carData.id}`,{method: "PATCH"}).then(res=>{
+  //             console.log(res.status)
+  //             if(res.status ===200) {
+  //               return v.velocity
+  //             } else {
+  //               return 'fail'
+  //             }
+  //           })
+  //         }
+  //       )      
+  //     })
+  //     ).then(res=>console.log(res))
 
-  },[startRace])
+  // },[startRace])
 
   useEffect(()=>{        
     const urlCars = "http://localhost:3000/garage?_page=1&_limit=7"    
@@ -81,8 +80,9 @@ export default function Garage() {
     </nav>
     <div><button onClick={()=>{
       setStartRace(true)
+      
     }}
-    >Race</button>{carList.map(car => {return (<GarageItem carData={car} key={car.id} />)})}</div>
+    >Race</button>{carList.map(car => {return (<GarageItem start={startRace} onStart={()=>{}} onFinish={(res)=>console.log(res)} carData={car} key={car.id} />)})}</div>
     {page>1? <button className="pageButton" onClick={()=>{
       //todo refactor ugly code
       const tmp = page-1

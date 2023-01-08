@@ -3,29 +3,39 @@ import ICar from '../ICar'
 import './garage-item.css'
 interface IGarageItemProps {
   carData: ICar;
+  start: boolean;
+  onStart: ()=>void;
+  onFinish: (result:string|number)=> void
 }
 
 export default function GarageItem(props:IGarageItemProps) {
-  const [animation, setAnimation] = useState<string|null>(null)
+  const [animation, setAnimation] = useState<number|null>(null)
   const [animationState, setAnimationState] = useState<string>('running')
-  const [start, setStart] = useState<boolean>(false)
+  // const [start, setStart] = useState<boolean>(false)
   useEffect(()=>{
-    if (start) {
+    if (props.start) {
       fetch(`http://localhost:3000/engine?status=started&id=${props.carData.id}`,{method: "PATCH"}).then(res=>{
           console.log(res.status)          
           return res.json()
         }).then(res=>{
           const time = res.distance/res.velocity
-          setAnimation(`${time}ms`)})}
-  },[start])
+          setAnimation(time)})
+    } else {
+      setAnimation(null)
+    }
+  },[props.start])
 
   useEffect(()=>{
    if (animation !== null) {
    fetch(`http://localhost:3000/engine?status=drive&id=${props.carData.id}`,{method: "PATCH"}).then(res=>{
       console.log(res.status)
       setAnimationState('paused')      
-      setStart(false)
-      
+      // setStart(false)
+    if(res.status ===200) {
+        props.onFinish(animation)
+      } else {
+        props.onFinish('fail')
+      }    
     })
   }
   },[animation])
@@ -34,9 +44,10 @@ export default function GarageItem(props:IGarageItemProps) {
     <div>
       <button onClick={()=>{
         setAnimation(null)
-        setStart(true)
+        // setStart(true)
+        props.onStart()
         }}>Go</button>
-      <div className={`car ${animation && 'animate'}`} style={{animationDuration:animation,"animation-play-state":animationState}}>{props.carData.name}</div>      
+      <div className={`car ${animation && 'animate'}`} style={{animationDuration:`${animation}ms`,"animation-play-state":animationState}}>{props.carData.name}</div>      
     </div>
   )
 }
