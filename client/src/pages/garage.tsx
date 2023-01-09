@@ -1,21 +1,16 @@
 import React, { FormEvent, useEffect, useState } from "react"
 import ICar from "../ICar"
 import GarageItem from '../components/GarageItem'
-import CarSelectionWidget from "../components/car-selection-widget"
 import CarFactoryWidget from "../components/CarFactoryWidget"
-import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
+import "./garage.scss"
 
 
 export default function Garage() {
-
-  interface ICarSpeed {
-    velocity?: number,
-    distance?: number
-  }
   const [carList, setCarList] = useState<Array<ICar>>([])
   const [carCount, setCarCount] = useState(0)
-  
+  const [changedCar, setChangedCar] = useState<ICar>({name:'',color:''})
+
   const [page, setPage] = useState(1)
   const [startRace, setStartRace] = useState<boolean>(false)
 
@@ -42,58 +37,70 @@ export default function Garage() {
   //     ).then(res=>console.log(res))
 
   // },[startRace])
+  
 
-  useEffect(()=>{        
-    const urlCars = "http://localhost:3000/garage?_page=1&_limit=7"    
-    fetch(urlCars, {
+  useEffect(()=>{                
+    fetch("http://localhost:3000/garage?_page=1&_limit=7", {
       method: "GET"
     }).then(res=>{
-      setCarCount(parseInt(res.headers.get("X-Total-Count")))
+      // setCarCount(parseInt(res.headers.get("X-Total-Count")))
       return res.json()
-    }).then(data => setCarList(data))
-    
-    const urlCarSpeed = "http://localhost:3000/engine?id=1&status=started"
-  },[carCount])
+    }).then(data => setCarList(data))        
+  },[])
+
   function getPage(page:number) {
-    //fetch new cars list ?
-    const urlCars = `http://localhost:3000/garage?_page=${page}&_limit=7`
-    fetch(urlCars, {
+    fetch(`http://localhost:3000/garage?_page=${page}&_limit=7`, {
       method: "GET"
     }).then(res=>res.json()).then(data => setCarList(data)) 
   }
+
   return (
   <div>
-    <nav>
+    <div className="car-menu">
       <CarFactoryWidget 
-      //i want to preserve old number of cars already in garage and show cars added with "create many cards" button i real time
-      //but now car counter is overriten by newly created cars
-      onGetTotalCarsNumber={(newCarsCount)=>setCarCount(carCount+newCarsCount)}
-
-      onAddCar={(carData)=>{
-        setCarList(last=>{
-          return [...last,carData]
-        })
-      }} />      
+        onGetTotalCarsNumber={(newCarsCount)=>setCarCount(carCount+newCarsCount)}
+        onAddCar={(carData)=>{
+          setCarList(last=>{
+            return [...last,carData]
+          })
+        }} 
+      />
+      <CarUpdateWidget car={changedCar} onCarChanged={(car:ICar)=>{
+        setChangedCar(car)
+        getPage(page)
+        }}
+        />      
+    </div>
+    <div>
+      <button onClick={()=>{setStartRace(true)}} disabled={startRace}>Race</button>
+    </div>
+    <div>
       <h2>Cars in garage: ({carCount})</h2>
       <h3>Page number: {page}</h3>
-      
-    </nav>
-    <div><button onClick={()=>{
-      setStartRace(true)
-      
-    }}
-    >Race</button>{carList.map((car,index) => {return (<GarageItem start={startRace} onStart={()=>{
-      results[index] = 'start'
-      console.log(JSON.stringify(results))
-    }
-    } 
-    onFinish={(res)=>{
-      results[index]=res
-      console.log(JSON.stringify(results))
-      if (!results.find(item => item === 'start')) {
-        console.log('finish')
+      {carList.map((car,index) => {
+        return (
+        <GarageItem 
+          start={startRace} 
+          onStart={()=>{ 
+            results[index] = 'start'
+            console.log(JSON.stringify(results))
+            }
+          }
+
+          onFinish={(res)=>{
+            results[index]=res
+            console.log(JSON.stringify(results))
+            if (!results.find(item => item === 'start')) {
+              console.log('finish')
+            }
+            }
+          } 
+          carData={car}
+          onCarChange={(car:ICar)=>{setChangedCar(car)}} 
+          key={car.id} 
+        />)})
       }
-      }} carData={car} key={car.id} />)})}</div>
+    </div>
     {page>1? <button className="pageButton" onClick={()=>{
       //todo refactor ugly code
       const tmp = page-1
@@ -101,8 +108,6 @@ export default function Garage() {
       getPage(tmp)
       }}>Prev Page</button>:""}
       {/* 7 is limit of cars shown */}
-    {(carCount-(page*7))>=0?<button className="pageButton" onClick={()=>{const tmp=page+1;setPage(page+1); getPage(tmp)}}>Next Page</button>:<button disabled className="pageButton" onClick={()=>{const tmp=page+1;setPage(page+1); getPage(tmp)}}>Next Page</button>}
-    
-    {/* <div>{carSpeed.velocity}</div> */}
+     {(carCount-(page*7))>=0?<button className="pageButton" onClick={()=>{const tmp=page+1;setPage(page+1); getPage(tmp)}}>Next Page</button>:<button disabled className="pageButton" onClick={()=>{const tmp=page+1;setPage(page+1); getPage(tmp)}}>Next Page</button>}    
   </div>)  
 }

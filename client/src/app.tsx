@@ -5,12 +5,11 @@ import Winners from './pages/winners'
 
 export default function App() {
   const [page, setPage] = useState<string>("garage")
-  return (
-    
+  return (    
       <div>
         <nav>        
-          <button onClick={() => setPage("garage")}>Garage</button>
-          <button onClick={() => setPage("winners")}>Winners</button>
+          <button onClick={() => setPage("garage")}>to Garage</button>
+          <button onClick={() => setPage("winners")}>to Winners</button>
         </nav>
         {page=="garage"?<Garage />:<Winners />}
       </div>

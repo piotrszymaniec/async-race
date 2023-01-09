@@ -1,8 +1,11 @@
-.car {
-  width: 50px;
-  height: 10px;
-  background-color: blueviolet;
+.garage-item {
+  height: 100px;
+  border-bottom: 1px solid white;
+  padding: 10px 0;
+}
 
+.car {
+  width: 80px;
 }
 
 .animate {

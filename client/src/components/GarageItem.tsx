@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react'
+import { removeCarFromServer } from '../common';
 import ICar from '../ICar'
+import CarShape from './car-shape'
 import './garage-item.css'
 interface IGarageItemProps {
   carData: ICar;
   start: boolean;
   onStart: ()=>void;
   onFinish: (result:string|number)=> void
+  onCarChange: (car:ICar) => void
 }
 
 export default function GarageItem(props:IGarageItemProps) {
   const [animation, setAnimation] = useState<number|null>(null)
   const [animationState, setAnimationState] = useState<string>('running')
-  const [start, setStart] = useState<boolean>(false)
+  const [start, setStart] = useState<boolean>(false)  
   useEffect(()=>{
     if (props.start || start) {
       props.onStart()
@@ -43,18 +46,38 @@ export default function GarageItem(props:IGarageItemProps) {
   },[animation])
 
   return(
-    <div>
-      <button onClick={()=>{
-        // props.onStart()
-        
-        setStart(true)
-        }}>Go</button>
+    <div className='garage-item'>
+      <div>
+        <button onClick={()=>{props.onCarChange(props.carData)}}>
+          Select
+        </button>
         <button onClick={()=>{
+          removeCarFromServer(props.carData.id).then(
+            //refresh garage page
+          )
+        }}>
+          Remove
+        </button>
+      </div>
+      <button 
+        onClick={()=>{
+        // props.onStart()        
+          setStart(true)
+        }
+        }
+      >Go</button>
+      <button 
+        onClick={()=>{
           setAnimation(null)
           setStart(false) 
-        }        
-        }>Stop</button>
-      <div className={`car ${animation && 'animate'}`} style={{animationDuration:`${animation}ms`,"animation-play-state":animationState}}>{props.carData.name}</div>      
+        }}
+      >Stop</button>{props.carData.name}
+      <div 
+        className={`car ${animation && 'animate'}`} 
+        style={{animationDuration:`${animation}ms`,"animation-play-state":animationState}}
+      >
+        <CarShape color={props.carData.color} />
+      </div>      
     </div>
   )
 }
