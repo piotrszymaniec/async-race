@@ -20,29 +20,36 @@ export default function Garage() {
   const results:Array<string|number> = []
   const startCarEngine = (id:number) => fetch(`http://localhost:3000/engine?status=started&id=${id}`,{method: "PATCH"})
   const driveCar = (id:number) => fetch(`http://localhost:3000/engine?status=drive&id=${id}`,{method: "PATCH"})
-  const getCarsFromGarage = (page:number):Promise<Array<ICar>> => fetch(`http://localhost:3000/garage?_page=${page}&_limit=7`, {method: "GET"}).then(res=>res.json())
-  
+  const getCarsFromGarage = (page:number): Promise<Array<ICar>> => fetch(`http://localhost:3000/garage?_page=${page}&_limit=7`, {method: "GET"}).then(res=>res.json())
+
   useEffect(()=>{
-      Promise.allSettled(carStatusList.map(carData => {        
-        startCarEngine(carData.car.id)
+      Promise.allSettled(carStatusList.map((carData,index) => {        
+        return startCarEngine(carData.car.id)
         .then(res=>{
+          
           console.log(res.status)
           return res.json()
         })
         .then((v) => {
-          driveCar(carData.car.id)
+          const time = v.distance/v.velocity
+          setCarStatusList(last=> {last[index].state = time; return [...last]})  
+          return driveCar(carData.car.id)
             .then(res=>{
               console.log(res.status)
-              if(res.status ===200) {
-                return v.velocity                
-              } else {
-                return 'fail'
-              }
+                  if(res.status ===200) {
+                    setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
+                    return v.velocity
+                  } else {
+                    setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
+                    return 'fail'
+                  }   
             })
         })      
       })      
-      ).then(res=>
-        console.log(res))
+      ).then(res=>{
+        console.log(res)
+        //todo show winner
+      })
     },[startRace]
   )
     
@@ -70,18 +77,33 @@ export default function Garage() {
         /*setCarList(last=>{
           return [...last,carData]
         })*/
-      }} />      
+      }} 
+      />      
       <h2>Cars in garage: ({carCount})</h2>
       <h3>Page number: {page}</h3>
       
     </nav>
     <div><button onClick={()=>{
-      setStartRace(true)
+      setStartRace(true)                
       
     }}
-    >Race</button>
-    {carStatusList.map((car,index) => {
-      console.log('does race started?',startRace)
+    >Race</button><button onClick={()=>{
+      //lets stop all cars by using cancelation token
+
+      Promise.allSettled(
+      carStatusList.map(data => {
+          console.log('reqCancell')
+          if (data.state == 'initial') {
+            console.log('warn')
+          }
+          return fetch(`http://localhost:3000/engine?status=stopped&id=${data.car.id}`,{method: "PATCH"}).then(res=>{
+            console.log('cancelled')
+            setCarStatusList(last=> {data.state = 'initial'; return [...last]})
+          });
+        })).then(()=>console.log('all stopped'))          
+      }     
+    }>Reset</button>
+    {carStatusList.map((car,index) => {      
       return (
         <GarageItem 
         start={car.state} 
@@ -137,8 +159,8 @@ export default function Garage() {
       )
     })}
     </div>
+    //todo make pagination
     {/* {page>1? <button className="pageButton" onClick={()=>{
-      //todo refactor ugly code
       const tmp = page-1
       setPage(tmp)
       getPage(tmp)
