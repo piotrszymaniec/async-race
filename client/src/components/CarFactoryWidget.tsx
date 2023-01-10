@@ -1,6 +1,6 @@
 import React, { FormEvent, useEffect, useState } from "react"
-import ICar from "../ICar"
-import generateCars from "../common"
+import ICar from '../common/ICar'
+import generateCars from "../common/common"
 
 interface CarFactoryWidgetProps {
   onAddCar: (car:ICar) => void

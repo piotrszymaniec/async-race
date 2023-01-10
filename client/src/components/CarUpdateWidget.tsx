@@ -1,5 +1,5 @@
 import React, { FormEvent, useEffect, useState } from "react"
-import ICar from "../ICar"
+import ICar from '../common/ICar'
 
 interface CarUpdateWidgetProps {
   // name: string,
