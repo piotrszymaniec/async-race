@@ -39,12 +39,9 @@ export default function CarFactoryWidget(props:CarFactoryWidgetProps) {
     })
   } 
 
-
   const onGenerateCars = () => {
     const cars = generateCars()
-    cars.forEach((car) => {
-    
-        //call fetch w
+    cars.forEach((car) => {        
         fetch('http://localhost:3000/garage', {
               method: 'POST',
               headers: {
@@ -52,15 +49,13 @@ export default function CarFactoryWidget(props:CarFactoryWidgetProps) {
               },
               body: JSON.stringify({name:car.name, color:car.color})
         })
-        .then(res=>{
-          
+        .then(res=>{          
           return res.json()})
           .catch(error => {
             console.log(error)          
           })        
         })
-      props.onGetTotalCarsNumber(cars.length)
-        
+      props.onGetTotalCarsNumber(cars.length)        
   }  
   return (
     <div>

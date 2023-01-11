@@ -15,12 +15,11 @@ export default function Garage() {
   
   const [page, setPage] = useState(1)
   const [startRace, setStartRace] = useState<boolean>(false)
-  //const [states, setStates] = useState<Array<boolean>>()
+
 
   const results:Array<string|number> = []
   const startCarEngine = (id:number) => fetch(`http://localhost:3000/engine?status=started&id=${id}`,{method: "PATCH"})
   const driveCar = (id:number) => fetch(`http://localhost:3000/engine?status=drive&id=${id}`,{method: "PATCH"})
-  const getCarsFromGarage = (page:number): Promise<Array<ICar>> => fetch(`http://localhost:3000/garage?_page=${page}&_limit=7`, {method: "GET"}).then(res=>res.json())
 
   useEffect(()=>{
       Promise.allSettled(carStatusList.map((carData,index) => {        
@@ -69,8 +68,6 @@ export default function Garage() {
   <div>
     <nav>
       <CarFactoryWidget 
-      //i want to preserve old number of cars already in garage and show cars added with "create many cards" button i real time
-      //but now car counter is overriten by newly created cars
       onGetTotalCarsNumber={(newCarsCount)=>setCarCount(carCount+newCarsCount)}
 
       onAddCar={(carData)=>{

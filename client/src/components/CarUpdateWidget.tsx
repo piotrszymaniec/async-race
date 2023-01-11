@@ -1,11 +1,8 @@
 import React, { FormEvent, useEffect, useState } from "react"
 import ICar from '../common/ICar'
 
-interface CarUpdateWidgetProps {
-  // name: string,
-  // color: string,
-  car: ICar
-  // onChange: (name:string, color:string)=>void
+interface CarUpdateWidgetProps {  
+  car: ICar  
   onCarChanged: (car:ICar) => void
 }
 export default function CarUpdateWidget(props:CarUpdateWidgetProps) {
@@ -17,8 +14,7 @@ export default function CarUpdateWidget(props:CarUpdateWidgetProps) {
   return (<div>
     <input type="text" name="car-name" id="car-name" value={car.name} onChange={(e:FormEvent<HTMLInputElement>)=>setCar({...car, name:e.currentTarget.value})} />
     <input type="color" name="car-color" id="car-color" value={car.color} onChange={(e:FormEvent<HTMLInputElement>)=>setCar({...car, color:e.currentTarget.value})}/>
-    <button onClick={()=>{
-      // setCar({...car, name:car.name,color:car.color})
+    <button onClick={()=>{      
       props.onCarChanged(car)
       fetch(`http://localhost:3000/garage/${props.car.id}`,{
       method: 'PUT',
