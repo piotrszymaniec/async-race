@@ -6,7 +6,11 @@ function generateName():string {
   return `${carPrefixName[Math.floor(Math.random()*carPrefixName.length)]} ${carSufixName[Math.floor(Math.random()*carSufixName.length)]}`
 }
 function generateColor():string {
-  return `#${Math.pow(Math.floor(Math.random()*255),3).toString(16)}`
+  let color = `#${Math.pow(Math.floor(Math.random()*255),3).toString(16)}`  
+  while (color.length<7) {
+    color+='0'
+  }
+  return color
 }
 
 export default function generateCars():Array<ICar> {  
