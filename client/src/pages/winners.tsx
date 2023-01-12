@@ -3,11 +3,13 @@ import ICar from "../common/ICar"
 import IWinner from "../common/IWinner"
 import {getAllCars, getAllWinners} from "../common/services"
 import CarShape from "../components/car-shape"
+import Pagination from "../components/Pagination"
 
 
 export default function Winners() {
   const [winners, setWinners] = useState<Array<IWinner>>([])
   const [cars, setCars] = useState<Array<ICar>>([])
+  const [paginationPage,setPaginationPage] = useState(1)
 
   useEffect(()=>{
     getAllWinners().then(     
@@ -20,6 +22,8 @@ export default function Winners() {
 
  return (
    <div>
+    <h2>Winners ({winners.length})</h2>
+    <h4>Page # {paginationPage}</h4>
       <table>
         <thead>
           <tr>            
@@ -35,6 +39,7 @@ export default function Winners() {
           winners.map(winner => {
             return {...cars.filter(car=>car.id == winner.id).pop(), ...winner}
           }).map( data => {
+            console.log(data)
             return (
               <tr>
                 <td>{data.id}</td>                
@@ -48,7 +53,9 @@ export default function Winners() {
           }
         </tbody>
       </table>
+      <Pagination perPage={7} count={winners.length} page={paginationPage} onChange={(page)=>{
+        setPaginationPage(page)
+      }}/>    
   </div>
   );
 }
-

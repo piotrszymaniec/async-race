@@ -6,6 +6,7 @@ interface IGarageItemProps {
   carData: ICar;
   start: number | string;
   onStart: ()=>void;
+  // onUpdate: ()=>void;
   onCancel: ()=>void;
   onFinish: (result:string|number)=> void
   onRemove: ()=>void

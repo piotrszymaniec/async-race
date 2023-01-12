@@ -4,6 +4,7 @@ import GarageItem from '../components/GarageItem'
 import CarFactoryWidget from "../components/CarFactoryWidget"
 import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
+import Pagination from '../components/Pagination'
 import { removeCar } from "../common/services"
 
 export default function Garage() {
@@ -11,6 +12,7 @@ export default function Garage() {
     velocity?: number,
     distance?: number
   }
+  const [paginationPage,setPaginationPage] = useState(1)
   const [carStatusList, setCarStatusList] = useState<Array<{car:ICar, state:string | number}>>([])
   const [carCount, setCarCount] = useState(0)
   
@@ -59,17 +61,16 @@ export default function Garage() {
       })
     },[startRace]
   )
+
     
   useEffect(()=>{            
-    fetch(`http://localhost:3000/garage?_page=${page}&_limit=7` , {
+    fetch(`http://localhost:3000/garage?_page=${paginationPage}&_limit=7` , {
       method: "GET"
     }).then(res=>{
       setCarCount(parseInt(res.headers.get("X-Total-Count")))
       return res.json()
-    }).then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))
-    
-    const urlCarSpeed = "http://localhost:3000/engine?id=1&status=started"
-  },[carCount])
+    }).then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))    
+  },[paginationPage])
   
   console.log('rerendered');
   return (
@@ -106,7 +107,7 @@ export default function Garage() {
     </nav>
     <div>
       <h2>Cars in garage: ({carCount})</h2>
-      <h3>Page number: {page}</h3>      
+      <h3>Page number: {paginationPage}</h3>      
     
     {carStatusList.map((car,index) => {      
       return (
@@ -177,22 +178,8 @@ export default function Garage() {
       )
     })}
     </div>
-    //todo make pagination
-    {/* {page>1? <button className="pageButton" onClick={()=>{
-      const tmp = page-1
-      setPage(tmp)
-      getPage(tmp)
-      }}>Prev Page</button>:""}      
-
-    {((carCount-(page*7))>=0)?
-      <button className="pageButton" 
-        onClick={
-          ()=>{const tmp=page+1;setPage(page+1); getPage(tmp)}
-        }>Next Page</button>:
-        <button disabled className="pageButton" 
-          onClick={()=>{const tmp=page+1;setPage(page+1); getPage(tmp)}
-          }>Next Page</button>
-      }     */}
-    
+      <Pagination perPage={7} count={carCount} page={paginationPage} onChange={(page)=>{
+        setPaginationPage(page)
+      }}/>    
   </div>)  
 }
