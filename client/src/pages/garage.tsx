@@ -75,18 +75,13 @@ export default function Garage() {
           return [...last,carData]
         })*/
       }} 
-      />      
-      <h2>Cars in garage: ({carCount})</h2>
-      <h3>Page number: {page}</h3>
-      
-    </nav>
-    <div><button onClick={()=>{
-      setStartRace(true)                
-      
+      /> 
+      <button onClick={()=>{
+      setStartRace(true)                      
     }}
-    >Race</button><button onClick={()=>{
+    >Race</button>
+    <button onClick={()=>{
       //lets stop all cars by using cancelation token
-
       Promise.allSettled(
       carStatusList.map(data => {
           console.log('reqCancell')
@@ -99,7 +94,12 @@ export default function Garage() {
           });
         })).then(()=>console.log('all stopped'))          
       }     
-    }>Reset</button>
+    }>Reset</button>     
+    </nav>
+    <div>
+      <h2>Cars in garage: ({carCount})</h2>
+      <h3>Page number: {page}</h3>      
+    
     {carStatusList.map((car,index) => {      
       return (
         <GarageItem 
