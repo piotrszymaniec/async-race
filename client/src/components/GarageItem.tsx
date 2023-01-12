@@ -8,6 +8,7 @@ interface IGarageItemProps {
   onStart: ()=>void;
   onCancel: ()=>void;
   onFinish: (result:string|number)=> void
+  onRemove: ()=>void
 }
 
 export default function GarageItem(props:IGarageItemProps) {
@@ -48,6 +49,10 @@ export default function GarageItem(props:IGarageItemProps) {
 
   return(
     <div>
+      <div>
+        <button onClick={()=>props.onRemove()}>Remove</button>
+      </div>
+      <div>
       <button onClick={()=>{
          props.onStart()
         
@@ -58,7 +63,10 @@ export default function GarageItem(props:IGarageItemProps) {
           //setAnimation(null)
          // setStart(false) 
         }        
-        }>Stop</button> {props.carData.name}
+        }>Stop</button> 
+      </div>
+        
+        {props.carData.name}
       <div className={`car ${props.start != 'initial' && 'animate'}`} style={{animationDuration:`${time}ms`,animationPlayState:animationState=='paused'?'paused':'running'}}>
         <CarShape color={props.carData.color} />
         </div>      

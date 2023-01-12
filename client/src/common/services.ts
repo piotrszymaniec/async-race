@@ -30,3 +30,8 @@ export function getAllWinners(): Promise<Array<IWinner>> {
     method: "GET"
 }).then(res=>res.json())}
 
+export function removeCar(id:number): Promise<number> {
+  return fetch(url+`garage/${id}`,{
+    method:'DELETE'
+  }).then(res=>res.status)
+}

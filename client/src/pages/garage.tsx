@@ -4,6 +4,7 @@ import GarageItem from '../components/GarageItem'
 import CarFactoryWidget from "../components/CarFactoryWidget"
 import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
+import { removeCar } from "../common/services"
 
 export default function Garage() {
   interface ICarSpeed {
@@ -47,7 +48,14 @@ export default function Garage() {
       })      
       ).then(res=>{
         console.log(res)
-        //todo show winner
+        res.map(r=>{
+          if (r.status === 'fulfilled') {
+            console.log(r.value)
+            return r.value
+          } else {
+            return {id:0,name:"", color:""}
+          }
+        })
       })
     },[startRace]
   )
@@ -83,7 +91,7 @@ export default function Garage() {
     <button onClick={()=>{
       //lets stop all cars by using cancelation token
       Promise.allSettled(
-      carStatusList.map(data => {
+        carStatusList.map(data => {
           console.log('reqCancell')
           if (data.state == 'initial') {
             console.log('warn')
@@ -150,6 +158,19 @@ export default function Garage() {
             console.log('finish')
           }
         }} 
+        onRemove = {()=>{
+          removeCar(car.car.id).then(removedCarId=>{
+            //update list
+            setCarStatusList(carStatusList.filter(car=>car.car.id!=removedCarId))
+            
+                fetch(`http://localhost:3000/garage?_page=${page}&_limit=7` , {
+                  method: "GET"
+                })
+                .then(res=>{return res.json()})
+                .then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))      
+          })
+
+        }}
         carData={car.car} 
         key={car.car.id} 
       />
