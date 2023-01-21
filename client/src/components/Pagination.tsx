@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 interface IPaginationProps {
   count:number
   page:number
@@ -7,18 +7,14 @@ interface IPaginationProps {
 }
 
 export default function Pagination(props:IPaginationProps) {
-  const [page,setPage] = useState<number>(props.page)
-
   return(
-      <div>        
-        <button disabled={page==1} onClick={()=>{
-          setPage(last=>last-1)
-          props.onChange(page)
-        }} >Prev</button>
-        <button disabled={(page)*props.perPage>props.count} onClick={()=>{
-          setPage(last=>last+1)
-          props.onChange(page)
-        }}>Next</button>
-      </div>
+    <div>        
+      <button disabled={props.page <2} onClick={()=>{
+        props.onChange(props.page-1)
+      }} >Prev</button>
+      <button disabled={(props.page)*props.perPage>props.count} onClick={()=>{
+        props.onChange(props.page+1)
+      }}>Next</button>
+    </div>
   )
 }
