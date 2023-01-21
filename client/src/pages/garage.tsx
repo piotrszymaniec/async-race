@@ -1,11 +1,12 @@
 import React, { FormEvent, useEffect, useState } from "react"
 import ICar from "../common/ICar"
+import IWinner from "../common/IWinner"
 import GarageItem from '../components/GarageItem'
 import CarFactoryWidget from "../components/CarFactoryWidget"
 import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
 import Pagination from '../components/Pagination'
-import { removeCar } from "../common/services"
+import { getWinner, removeCar, createWinner, updateWinner } from "../common/services"
 
 export default function Garage() {
   interface ICarSpeed {
@@ -24,11 +25,10 @@ export default function Garage() {
   const startCarEngine = (id:number) => fetch(`http://localhost:3000/engine?status=started&id=${id}`,{method: "PATCH"})
   const driveCar = (id:number) => fetch(`http://localhost:3000/engine?status=drive&id=${id}`,{method: "PATCH"})
 
-  useEffect(()=>{
+  const onRace = ()=>{
       Promise.allSettled(carStatusList.map((carData,index) => {        
         return startCarEngine(carData.car.id)
-        .then(res=>{
-          
+        .then(res=>{                    
           console.log(res.status)
           return res.json()
         })
@@ -40,27 +40,40 @@ export default function Garage() {
               console.log(res.status)
                   if(res.status ===200) {
                     setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
-                    return v.velocity
+                    return {id:carData.car.id, v:v.velocity}
                   } else {
                     setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
-                    return 'fail'
+                    return {id:carData.car.id, v:0}
                   }   
             })
         })      
       })      
       ).then(res=>{
         console.log(res)
-        res.map(r=>{
+        const winner = res.map(r=>{
           if (r.status === 'fulfilled') {
-            console.log(r.value)
+            // console.log(r.value)
             return r.value
-          } else {
-            return {id:0,name:"", color:""}
           }
+       }).filter(r=>r.v!==0).sort((a,b)=>b.v-a.v).pop()
+        return winner        
+      }).then(w=>{
+        console.log(w)
+          const time = Math.round(500000/w.v/10)/100
+          getWinner(w.id).then(res=>{
+            if (res.status === 404) {
+              //create new winner
+              return createWinner(w.id, 1, time)
+            } else if (res.status === 200){
+              return res.json().then((w1:IWinner) => updateWinner(w.id,w1.wins+1,w1.time<time?w1.time:time))
+              //increment
+            }           
+          })
+        //fetch winner with id of current winner
+        //create winner
         })
-      })
-    },[startRace]
-  )
+    }
+  
 
     
   useEffect(()=>{            
@@ -86,7 +99,7 @@ export default function Garage() {
       }} 
       /> 
       <button onClick={()=>{
-      setStartRace(true)                      
+      onRace()                   
     }}
     >Race</button>
     <button onClick={()=>{

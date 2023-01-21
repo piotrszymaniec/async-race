@@ -30,6 +30,32 @@ export function getAllWinners(): Promise<Array<IWinner>> {
     method: "GET"
 }).then(res=>res.json())}
 
+export function getWinner(id:number): Promise<Response> { 
+  return fetch(`http://localhost:3000/winners/${id}`, {
+    method: "GET"
+  })
+}
+// .then(res=>res.json())}
+
+export function createWinner(id:number, wins:number, time:number) {
+  return fetch(`http://localhost:3000/winners`,{
+    method: "POST",
+    headers: {
+      'Content-Type': 'application/json'
+    },    
+    body: JSON.stringify({id, wins, time})
+  }).then(res=>res.json())
+}
+export function updateWinner(id:number, wins:number, time:number) {
+  return fetch(`http://localhost:3000/winners/${id}`,{
+    method: "PUT",
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({wins, time})
+  }).then(res=>res.json())
+}
+
 export function removeCar(id:number): Promise<number> {
   return fetch(url+`garage/${id}`,{
     method:'DELETE'

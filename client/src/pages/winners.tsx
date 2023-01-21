@@ -19,7 +19,7 @@ export default function Winners() {
        data => setCars(data)
     )
   },[])  
-
+console.log(winners)
  return (
    <div>
     <h2>Winners ({winners.length})</h2>
