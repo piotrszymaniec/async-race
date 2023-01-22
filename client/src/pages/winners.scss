@@ -5,4 +5,29 @@
     font-family: 'Work Sans', sans-serif;
     color: #ffc900;
   }
+
+  table {
+    border-collapse: collapse;
+    width: 40%;
+    font-family: 'Work Sans', sans-serif;
+
+    thead {
+      th {
+        font-size: 1.2em;
+        padding: 5px 10px;
+        border-bottom: 1px solid #ffc900;
+      }
+
+      th:nth-child(3) {
+        padding: 0 30px;
+      }
+
+    }
+
+    td {
+      font-size: 1.1em;
+      text-align: center;
+    }
+
+  }
 }

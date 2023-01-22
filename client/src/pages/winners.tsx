@@ -39,10 +39,10 @@ console.log(winners)
           {                     
           winners.map(winner => {
             return {...cars.filter(car=>car.id == winner.id).pop(), ...winner}
-          }).map( data => {
+          }).map( (data,index) => {
             console.log(data)
             return (
-              <tr>
+              <tr key={index}>
                 <td>{data.id}</td>                
                 <td><CarShape color={data.color} /></td>
                 <td>{data.name}</td>                
