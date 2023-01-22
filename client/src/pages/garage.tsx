@@ -1,4 +1,5 @@
 import React, { FormEvent, useEffect, useState } from "react"
+import generateCars from "../common/common"
 import ICar from "../common/ICar"
 import IWinner from "../common/IWinner"
 import GarageItem from '../components/GarageItem'
@@ -13,9 +14,28 @@ export default function Garage() {
   const [carStatusList, setCarStatusList] = useState<Array<{car:ICar, state:string | number}>>([])
   const [carCount, setCarCount] = useState(0)
   const [carForUpdate, setCarForUpdate] = useState({name:"",color:""})
-  const [page, setPage] = useState(1)    
+  const [page, setPage] = useState(1) 
   const startCarEngine = (id:number) => fetch(`http://localhost:3000/engine?status=started&id=${id}`,{method: "PATCH"})
   const driveCar = (id:number) => fetch(`http://localhost:3000/engine?status=drive&id=${id}`,{method: "PATCH"})
+
+const onGenerateCars = () => {
+    const cars = generateCars()
+    cars.forEach((car) => {        
+        fetch('http://localhost:3000/garage', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({name:car.name, color:car.color})
+        })
+        .then(res=>{          
+          return res.json()})
+          .catch(error => {
+            console.log(error)          
+          })        
+        })
+      setCarCount(carCount+cars.length)
+  }  
 
   const onRace = ()=>{
       Promise.allSettled(carStatusList.map((carData,index) => {        
@@ -80,12 +100,11 @@ export default function Garage() {
   <div>
     <nav>
       <CarFactoryWidget 
-      onGetTotalCarsNumber={(newCarsCount)=>setCarCount(carCount+newCarsCount)}
-
       onAddCar={(carData)=>{
         /*setCarList(last=>{
           return [...last,carData]
         })*/
+        
       }} 
       /> 
       <CarUpdateWidget car={carForUpdate} onCarChanged={(car)=>{setCarForUpdate(car)}}/>
@@ -107,7 +126,8 @@ export default function Garage() {
           });
         })).then(()=>console.log('all stopped'))          
       }     
-    }>Reset</button>     
+    }>Reset</button>   
+    <button onClick={()=>onGenerateCars()}>CREATE MANY CARS</button>  
     </nav>
     <div>
       <h2>Cars in garage: ({carCount})</h2>

@@ -1,10 +1,9 @@
 import React, { FormEvent, useEffect, useState } from "react"
 import ICar from '../common/ICar'
-import generateCars from "../common/common"
+
 
 interface CarFactoryWidgetProps {
-  onAddCar: (car:ICar) => void
-  onGetTotalCarsNumber: (count:number) => void
+  onAddCar: (car:ICar) => void  
 }
 
 export default function CarFactoryWidget(props:CarFactoryWidgetProps) {
@@ -39,30 +38,11 @@ export default function CarFactoryWidget(props:CarFactoryWidgetProps) {
     })
   } 
 
-  const onGenerateCars = () => {
-    const cars = generateCars()
-    cars.forEach((car) => {        
-        fetch('http://localhost:3000/garage', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({name:car.name, color:car.color})
-        })
-        .then(res=>{          
-          return res.json()})
-          .catch(error => {
-            console.log(error)          
-          })        
-        })
-      props.onGetTotalCarsNumber(cars.length)        
-  }  
   return (
     <div>
       <input type="text" value={carName} onChange={newNameChange}/>
       <input type="color" color={carColor} onChange={carColorChange}/>
       <button disabled={isFetching} onClick={onCreateCar}>CREATE</button>
-      <button onClick={onGenerateCars}>CREATE MANY CARS</button>
     </div>
   )
 }
