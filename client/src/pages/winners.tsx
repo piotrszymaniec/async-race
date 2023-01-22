@@ -4,6 +4,7 @@ import IWinner from "../common/IWinner"
 import {getAllCars, getAllWinners} from "../common/services"
 import CarShape from "../components/car-shape"
 import Pagination from "../components/Pagination"
+import "./winners.scss"
 
 
 export default function Winners() {
@@ -21,9 +22,9 @@ export default function Winners() {
   },[])  
 console.log(winners)
  return (
-   <div>
+   <div className="winners">
     <h2>Winners ({winners.length})</h2>
-    <h4>Page # {paginationPage}</h4>
+    <h3>Page # {paginationPage}</h3>
       <table>
         <thead>
           <tr>            
@@ -43,8 +44,8 @@ console.log(winners)
             return (
               <tr>
                 <td>{data.id}</td>                
-                <td>{data.name}</td>                
                 <td><CarShape color={data.color} /></td>
+                <td>{data.name}</td>                
                 <td>{data.wins}</td>
                 <td>{data.time}</td>     
               </tr>
