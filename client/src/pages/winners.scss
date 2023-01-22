@@ -6,6 +6,12 @@
     color: #ffc900;
   }
 
+  .sort {
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
   table {
     border-collapse: collapse;
     width: 40%;
@@ -16,6 +22,10 @@
         font-size: 1.2em;
         padding: 5px 10px;
         border-bottom: 1px solid #ffc900;
+
+        &:hover {
+          cursor: default;
+        }
       }
 
       th:nth-child(3) {

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react"
 import ICar from "../common/ICar"
 import IWinner from "../common/IWinner"
+import ISort from "../common/ISort"
 import {getAllCars, getAllWinners} from "../common/services"
 import CarShape from "../components/CarShape"
 import Pagination from "../components/Pagination"
@@ -11,15 +12,17 @@ export default function Winners() {
   const [winners, setWinners] = useState<Array<IWinner>>([])
   const [cars, setCars] = useState<Array<ICar>>([])
   const [paginationPage,setPaginationPage] = useState(1)
+  const [sortOrder, setSortOrder] = useState<ISort>({sort:'id',order:'ASC'})
 
   useEffect(()=>{
-    getAllWinners().then(     
+    getAllWinners(sortOrder).then(     
        data => setWinners(data)
     )
     getAllCars().then(
        data => setCars(data)
     )
-  },[])  
+  },[sortOrder])  
+  
  return (
    <div className="winners">
     <h2>Winners ({winners.length})</h2>
@@ -27,11 +30,11 @@ export default function Winners() {
       <table>
         <thead>
           <tr>            
-            <th>Number</th>
+            <th className="sort" onClick={()=>setSortOrder(so => (so.order === 'DESC')? {sort:'id', order:'ASC'}:{sort:'id', order:'DESC'})}>Number</th>
             <th>Car</th>
             <th>Name</th>
-            <th>Wins</th>
-            <th>Best time (seconds)</th>
+            <th className="sort" onClick={()=>setSortOrder(so => (so.order === 'DESC')? {sort:'wins', order:'ASC'}:{sort:'id', order:'DESC'})}>Wins</th>
+            <th className="sort" onClick={()=>setSortOrder(so => (so.order === 'DESC')? {sort:'time', order:'ASC'}:{sort:'id', order:'DESC'})}>Best time (seconds)</th>
           </tr>
         </thead>
         <tbody>
