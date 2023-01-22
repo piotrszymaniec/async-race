@@ -8,7 +8,7 @@ interface CarFactoryWidgetProps {
 }
 
 export default function CarFactoryWidget(props:CarFactoryWidgetProps) {
-  const [carColor, setCarColor] = useState("#00FF00")
+  const [carColor, setCarColor] = useState("#000000")
   const carColorChange = (e:FormEvent<HTMLInputElement>) => {
     setCarColor(e.currentTarget.value)
   }
