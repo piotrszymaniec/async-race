@@ -162,16 +162,29 @@ const onGenerateCars = () => {
         }}
 
         onRemove = {()=>{
-          removeCar(car.car.id).then(id=>{
-            removeWinner(id)
-            //update list
-            setCarStatusList(carStatusList.filter(car=>car.car.id!=id))
-            
-                fetch(`http://localhost:3000/garage?_page=${page}&_limit=7` , {
-                  method: "GET"
-                })
-                .then(res=>{return res.json()})
-                .then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))      
+          const carId = car.car.id
+          removeCar(carId).then(status=>{
+            if (status == 200) {
+              getWinner(carId).then(res=>{
+                if (res.status == 200) {
+                  removeWinner(carId).then(res=>{
+                    if (res==200) {
+                      console.log('car was removed from winners')
+                    }
+                  })
+                }
+              })
+          
+              //update list
+              fetch(`http://localhost:3000/garage?_page=${page}&_limit=7` , {
+                method: "GET"
+              })
+              .then(res=>{
+                setCarCount(parseInt(res.headers.get("X-Total-Count")))
+                return res.json()}
+              )
+              .then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))      
+            }
           })
 
         }}
