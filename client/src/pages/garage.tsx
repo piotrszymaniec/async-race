@@ -15,6 +15,7 @@ export default function Garage() {
   const [carCount, setCarCount] = useState(0)
   const [carForUpdate, setCarForUpdate] = useState({name:"",color:""})
   const [page, setPage] = useState(1)   
+  const [buttonsDisabledWhileRacing, setButtonsDisabledWhileRacing] = useState(false)
   const startCarEngine = (id:number) => fetch(`http://localhost:3000/engine?status=started&id=${id}`,{method: "PATCH"})
   const driveCar = (id:number) => fetch(`http://localhost:3000/engine?status=drive&id=${id}`,{method: "PATCH"})
 
@@ -30,7 +31,8 @@ const onGenerateCars = () => {
   }  
 
   const onRace = ()=>{
-      Promise.allSettled(carStatusList.map((carData,index) => {        
+    Promise.allSettled(carStatusList.map((carData,index) => {        
+        setButtonsDisabledWhileRacing(true)
         return startCarEngine(carData.car.id)
         .then(res=>{                    
           return res.json()
@@ -67,9 +69,8 @@ const onGenerateCars = () => {
               return res.json().then((w1:IWinner) => updateWinner(w.id,w1.wins+1,w1.time<time?w1.time:time))
               //increment
             }           
-          })
-        //fetch winner with id of current winner
-        //create winner
+          })               
+        setButtonsDisabledWhileRacing(false)
         })
     }
     
@@ -86,9 +87,9 @@ const onGenerateCars = () => {
   <div className="garage">
     <nav className="garage-menu">
       <div className="car-edit-menu">
-        <CarFactoryWidget onAddCar={(car)=>{setCarStatusList(last=>{return [...last, {car, state: 'initial'}]})}}/> 
+        <CarFactoryWidget disabled={buttonsDisabledWhileRacing} onAddCar={(car)=>{setCarStatusList(last=>{return [...last, {car, state: 'initial'}]})}}/> 
         <CarUpdateWidget car={carForUpdate} onCarChanged={(car)=>{setCarForUpdate(car)}}/>
-        <button className="create-cars" onClick={()=>onGenerateCars()}>CREATE MANY CARS</button>
+        <button disabled={buttonsDisabledWhileRacing} className="create-cars" onClick={()=>onGenerateCars()}>CREATE MANY CARS</button>
       </div>
       <div className="race-controls">
         <div className="flag-icon">🏁</div><button className="race-button" onClick={()=>onRace()}>Race</button>

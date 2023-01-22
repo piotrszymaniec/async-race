@@ -4,7 +4,8 @@ import { createCar } from "../common/services"
 
 
 interface CarFactoryWidgetProps {
-  onAddCar: (car:ICar) => void  
+  onAddCar: (car:ICar) => void
+  disabled: boolean
 }
 
 export default function CarFactoryWidget(props:CarFactoryWidgetProps) {
@@ -13,22 +14,18 @@ export default function CarFactoryWidget(props:CarFactoryWidgetProps) {
     setCarColor(e.currentTarget.value)
   }
   const [carName, setCarName] = useState("")
-  const [isFetching, setIsFetching] = useState(false)
   const newNameChange = (e:FormEvent<HTMLInputElement>) => {
       setCarName(e.currentTarget.value)
   }
   
   const onCreateCar = () => {
-    setIsFetching(true)
     createCar(carName, carColor)    
     .then(car=>{
       props.onAddCar(car)
       setCarName("")
-      setIsFetching(false)
     })
     .catch(error => {
       console.log(error)
-      setIsFetching(false)
     })
   } 
 
@@ -36,7 +33,7 @@ export default function CarFactoryWidget(props:CarFactoryWidgetProps) {
     <div className="car-create">
       <input type="text" value={carName} onChange={newNameChange}/>
       <input type="color" color={carColor} onChange={carColorChange}/>
-      <button disabled={isFetching} onClick={onCreateCar}>CREATE</button>
+      <button disabled={props.disabled} onClick={onCreateCar}>CREATE</button>
     </div>
   )
 }
