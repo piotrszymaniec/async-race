@@ -7,33 +7,25 @@ import CarFactoryWidget from "../components/CarFactoryWidget"
 import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
 import Pagination from '../components/Pagination'
-import { getWinner, removeCar, createWinner, updateWinner } from "../common/services"
+import { getWinner, removeCar, createWinner, updateWinner, createCar } from "../common/services"
 
 export default function Garage() {
   const [paginationPage,setPaginationPage] = useState(1)
   const [carStatusList, setCarStatusList] = useState<Array<{car:ICar, state:string | number}>>([])
   const [carCount, setCarCount] = useState(0)
   const [carForUpdate, setCarForUpdate] = useState({name:"",color:""})
-  const [page, setPage] = useState(1) 
+  const [page, setPage] = useState(1)   
   const startCarEngine = (id:number) => fetch(`http://localhost:3000/engine?status=started&id=${id}`,{method: "PATCH"})
   const driveCar = (id:number) => fetch(`http://localhost:3000/engine?status=drive&id=${id}`,{method: "PATCH"})
 
 const onGenerateCars = () => {
     const cars = generateCars()
     cars.forEach((car) => {        
-        fetch('http://localhost:3000/garage', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({name:car.name, color:car.color})
+        createCar(car.name, car.color)
+        .catch(error => {
+          console.log(error)          
         })
-        .then(res=>{          
-          return res.json()})
-          .catch(error => {
-            console.log(error)          
-          })        
-        })
+      })                          
       setCarCount(carCount+cars.length)
   }  
 
@@ -100,12 +92,10 @@ const onGenerateCars = () => {
   <div>
     <nav>
       <CarFactoryWidget 
-      onAddCar={(carData)=>{
-        /*setCarList(last=>{
-          return [...last,carData]
-        })*/
-        
-      }} 
+      onAddCar={(car)=>{
+        setCarStatusList(last=>{return [...last, {car, state: 'initial'}]})
+           
+        }}
       /> 
       <CarUpdateWidget car={carForUpdate} onCarChanged={(car)=>{setCarForUpdate(car)}}/>
       <button onClick={()=>{

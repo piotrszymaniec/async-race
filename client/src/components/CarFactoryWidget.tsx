@@ -1,5 +1,6 @@
 import React, { FormEvent, useEffect, useState } from "react"
 import ICar from '../common/ICar'
+import { createCar } from "../common/services"
 
 
 interface CarFactoryWidgetProps {
@@ -19,16 +20,9 @@ export default function CarFactoryWidget(props:CarFactoryWidgetProps) {
   
   const onCreateCar = () => {
     setIsFetching(true)
-    fetch('http://localhost:3000/garage', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({name:carName, color:carColor})
-    })
-    .then(res=>res.json())
-    .then(content=>{
-      props.onAddCar(content)
+    createCar(carName, carColor)    
+    .then(car=>{
+      props.onAddCar(car)
       setCarName("")
       setIsFetching(false)
     })

@@ -13,6 +13,15 @@ export function getAllCars(): Promise<Array<ICar>> {
     method:'GET'
   }).then(res=>res.json())
 }
+export function createCar(name:string, color:string): Promise<ICar> {
+  return fetch('http://localhost:3000/garage', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({name, color})
+  }).then(res=>res.json())
+}
 
 // Optional:
 // _page=[integer]
