@@ -7,7 +7,7 @@ import CarFactoryWidget from "../components/CarFactoryWidget"
 import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
 import Pagination from '../components/Pagination'
-import { getWinner, removeCar, createWinner, updateWinner, createCar } from "../common/services"
+import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner } from "../common/services"
 
 export default function Garage() {
   const [paginationPage,setPaginationPage] = useState(1)
@@ -162,9 +162,10 @@ const onGenerateCars = () => {
         }}
 
         onRemove = {()=>{
-          removeCar(car.car.id).then(removedCarId=>{
+          removeCar(car.car.id).then(id=>{
+            removeWinner(id)
             //update list
-            setCarStatusList(carStatusList.filter(car=>car.car.id!=removedCarId))
+            setCarStatusList(carStatusList.filter(car=>car.car.id!=id))
             
                 fetch(`http://localhost:3000/garage?_page=${page}&_limit=7` , {
                   method: "GET"
