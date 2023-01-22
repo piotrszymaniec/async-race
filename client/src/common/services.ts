@@ -1,4 +1,5 @@
 import  ICar from "./ICar"
+import ISort from "./ISort"
 import  IWinner from "./IWinner"
 
 const url:string = "http://localhost:3000/"
@@ -23,19 +24,8 @@ export function createCar(name:string, color:string): Promise<ICar> {
   }).then(res=>res.json())
 }
 
-// Optional:
-// _page=[integer]
-// _limit=[integer]
-//If _limit param is passed api returns a header X-Total-Count that countains total number of records.
-// _sort=['id'|'wins'|'time']
-// _order=['ASC'|'DESC']
-// export function getPageWinners(id:number): Promise<Array<IWinner>> { 
-//   return fetch(`http://localhost:3000/winners?_page=1&_limit=7`, {
-//     method: "GET"
-//   }).then(res=>res.json())
-// }
-export function getAllWinners(): Promise<Array<IWinner>> { 
-  return fetch(`http://localhost:3000/winners`, {
+export function getAllWinners(sortOrder:ISort): Promise<Array<IWinner>> { 
+  return fetch(`http://localhost:3000/winners?_sort=${sortOrder.sort}&_order=${sortOrder.order}`, {
     method: "GET"
 }).then(res=>res.json())}
 
@@ -44,7 +34,6 @@ export function getWinner(id:number): Promise<Response> {
     method: "GET"
   })
 }
-// .then(res=>res.json())}
 
 export function createWinner(id:number, wins:number, time:number) {
   return fetch(`http://localhost:3000/winners`,{
