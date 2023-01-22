@@ -9,19 +9,11 @@ import Pagination from '../components/Pagination'
 import { getWinner, removeCar, createWinner, updateWinner } from "../common/services"
 
 export default function Garage() {
-  interface ICarSpeed {
-    velocity?: number,
-    distance?: number
-  }
   const [paginationPage,setPaginationPage] = useState(1)
   const [carStatusList, setCarStatusList] = useState<Array<{car:ICar, state:string | number}>>([])
   const [carCount, setCarCount] = useState(0)
   const [carForUpdate, setCarForUpdate] = useState({name:"",color:""})
-  const [page, setPage] = useState(1)
-  const [startRace, setStartRace] = useState<boolean>(false)
-  
-
-  const results:Array<string|number> = []
+  const [page, setPage] = useState(1)    
   const startCarEngine = (id:number) => fetch(`http://localhost:3000/engine?status=started&id=${id}`,{method: "PATCH"})
   const driveCar = (id:number) => fetch(`http://localhost:3000/engine?status=drive&id=${id}`,{method: "PATCH"})
 
@@ -73,8 +65,6 @@ export default function Garage() {
         //create winner
         })
     }
-  
-
     
   useEffect(()=>{            
     fetch(`http://localhost:3000/garage?_page=${paginationPage}&_limit=7` , {
@@ -149,15 +139,11 @@ export default function Garage() {
                   //if (props.start){
                   if(res.status ===200) {
                     setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
-                    //props.onFinish(animation)
                   } else {
                     setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
-                    //props.onFinish('fail')
                   }                  
               })
             })                      
-            //results[index] = 'start'
-            //console.log(JSON.stringify(results))
         }} 
         onCancel = {()=>{
           console.log('reqCancell')
@@ -169,13 +155,7 @@ export default function Garage() {
             setCarStatusList(last=> {last[index].state = 'initial'; return [...last]})
           });
         }}
-        onFinish={(res)=>{
-          results[index]=res
-          console.log(JSON.stringify(results))
-          if (!results.find(item => item === 'start')) {
-            console.log('finish')
-          }
-        }} 
+
         onRemove = {()=>{
           removeCar(car.car.id).then(removedCarId=>{
             //update list
