@@ -8,6 +8,11 @@
   width: 80px;
 }
 
+.car-name {
+  font-family: 'Ubuntu Mono', monospace;
+  margin-left: 1em;
+}
+
 .animate {
   animation: slide linear;
   animation-fill-mode: forwards;
