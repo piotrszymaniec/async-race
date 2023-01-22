@@ -20,7 +20,6 @@ export default function Winners() {
        data => setCars(data)
     )
   },[])  
-console.log(winners)
  return (
    <div className="winners">
     <h2>Winners ({winners.length})</h2>
@@ -40,7 +39,6 @@ console.log(winners)
           winners.map(winner => {
             return {...cars.filter(car=>car.id == winner.id).pop(), ...winner}
           }).map( (data,index) => {
-            console.log(data)
             return (
               <tr key={index}>
                 <td>{data.id}</td>                

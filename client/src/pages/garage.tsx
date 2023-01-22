@@ -33,7 +33,6 @@ const onGenerateCars = () => {
       Promise.allSettled(carStatusList.map((carData,index) => {        
         return startCarEngine(carData.car.id)
         .then(res=>{                    
-          console.log(res.status)
           return res.json()
         })
         .then((v) => {
@@ -41,7 +40,6 @@ const onGenerateCars = () => {
           setCarStatusList(last=> {last[index].state = time; return [...last]})  
           return driveCar(carData.car.id)
             .then(res=>{
-              console.log(res.status)
                   if(res.status ===200) {
                     setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
                     return {id:carData.car.id, v:v.velocity}
@@ -53,16 +51,13 @@ const onGenerateCars = () => {
         })      
       })      
       ).then(res=>{
-        console.log(res)
         const winner = res.map(r=>{
           if (r.status === 'fulfilled') {
-            // console.log(r.value)
             return r.value
           }
        }).filter(r=>r.v!==0).sort((a,b)=>b.v-a.v).pop()
         return winner        
       }).then(w=>{
-        console.log(w)
           const time = Math.round(500000/w.v/10)/100
           getWinner(w.id).then(res=>{
             if (res.status === 404) {
@@ -87,7 +82,6 @@ const onGenerateCars = () => {
     }).then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))    
   },[paginationPage])
   
-  console.log('rerendered');
   return (
   <div className="garage">
     <nav className="garage-menu">
@@ -99,18 +93,12 @@ const onGenerateCars = () => {
       <div className="race-controls">
         <div className="flag-icon">🏁</div><button className="race-button" onClick={()=>onRace()}>Race</button>
         <button onClick={()=>{
-       //lets stop all cars by using cancelation token
         Promise.allSettled(
           carStatusList.map(data => {
-            console.log('reqCancell')
-            if (data.state == 'initial') {
-              console.log('warn')
-            }
             return fetch(`http://localhost:3000/engine?status=stopped&id=${data.car.id}`,{method: "PATCH"}).then(res=>{
-              console.log('cancelled')
               setCarStatusList(last=> {data.state = 'initial'; return [...last]})
             });
-          })).then(()=>console.log('all stopped'))          
+          }))       
         }}>Reset</button>
     </div>   
     </nav>
@@ -126,22 +114,14 @@ const onGenerateCars = () => {
           setCarForUpdate(car)
         }}
         onStart={()=>{
-          console.log('reqStart')
           fetch(`http://localhost:3000/engine?status=started&id=${car.car.id}`,{method: "PATCH"})
             .then(res=>{
-              //console.log(res.status)          
               return res.json()
             })
             .then(res=>{
-              console.log('started')
               const time = res.distance/res.velocity
               setCarStatusList(last=> {last[index].state = time; return [...last]})              
               fetch(`http://localhost:3000/engine?status=drive&id=${car.car.id}`,{method: "PATCH"}).then(res=>{
-                  //console.log(res.status)
-                  console.log('stopped')
-                  //setAnimationState('paused')      
-                  // setStart(false)
-                  //if (props.start){
                   if(res.status ===200) {
                     setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
                   } else {
@@ -151,12 +131,7 @@ const onGenerateCars = () => {
             })                      
         }} 
         onCancel = {()=>{
-          console.log('reqCancell')
-          if (carStatusList[index].state == 'initial'){
-            console.log('warn')
-          }
           fetch(`http://localhost:3000/engine?status=stopped&id=${car.car.id}`,{method: "PATCH"}).then(res=>{
-            console.log('cancelled')
             setCarStatusList(last=> {last[index].state = 'initial'; return [...last]})
           });
         }}
@@ -167,11 +142,7 @@ const onGenerateCars = () => {
             if (status == 200) {
               getWinner(carId).then(res=>{
                 if (res.status == 200) {
-                  removeWinner(carId).then(res=>{
-                    if (res==200) {
-                      console.log('car was removed from winners')
-                    }
-                  })
+                  removeWinner(carId)
                 }
               })
           

@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from "react"
+import React, { FormEvent, useState } from "react"
 import ICar from '../common/ICar'
 import { createCar } from "../common/services"
 
