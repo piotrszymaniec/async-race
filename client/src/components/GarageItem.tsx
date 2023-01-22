@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import ICar from '../common/ICar'
-import CarShape from './car-shape'
+import CarShape from './CarShape'
 import './garage-item.css'
 interface IGarageItemProps {
   carData: ICar;

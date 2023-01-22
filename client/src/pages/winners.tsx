@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import ICar from "../common/ICar"
 import IWinner from "../common/IWinner"
 import {getAllCars, getAllWinners} from "../common/services"
-import CarShape from "../components/car-shape"
+import CarShape from "../components/CarShape"
 import Pagination from "../components/Pagination"
 import "./winners.scss"
 
