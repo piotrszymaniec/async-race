@@ -56,9 +56,3 @@ export default function generateCars():Array<ICar> {
   }
   return arr
 }
-
-export function removeCarFromServer(id:number):Promise<Response> {
-  return fetch(`http://localhost:3000/garage/${id}`,{
-    method: 'DELETE'
-  })
-}
