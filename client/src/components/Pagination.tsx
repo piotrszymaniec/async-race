@@ -1,4 +1,5 @@
 import React from 'react'
+import './pagination.scss'
 interface IPaginationProps {
   count:number
   page:number
@@ -8,7 +9,7 @@ interface IPaginationProps {
 
 export default function Pagination(props:IPaginationProps) {
   return(
-    <div>        
+    <div className='pagination'>        
       <button disabled={props.page <2} onClick={()=>{
         props.onChange(props.page-1)
       }} >Prev</button>

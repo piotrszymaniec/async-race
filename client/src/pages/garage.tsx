@@ -90,34 +90,29 @@ const onGenerateCars = () => {
   console.log('rerendered');
   return (
   <div>
-    <nav>
-      <CarFactoryWidget 
-      onAddCar={(car)=>{
-        setCarStatusList(last=>{return [...last, {car, state: 'initial'}]})
-           
-        }}
-      /> 
-      <CarUpdateWidget car={carForUpdate} onCarChanged={(car)=>{setCarForUpdate(car)}}/>
-      <button onClick={()=>{
-      onRace()                   
-    }}
-    >Race</button>
-    <button onClick={()=>{
-      //lets stop all cars by using cancelation token
-      Promise.allSettled(
-        carStatusList.map(data => {
-          console.log('reqCancell')
-          if (data.state == 'initial') {
-            console.log('warn')
-          }
-          return fetch(`http://localhost:3000/engine?status=stopped&id=${data.car.id}`,{method: "PATCH"}).then(res=>{
-            console.log('cancelled')
-            setCarStatusList(last=> {data.state = 'initial'; return [...last]})
-          });
-        })).then(()=>console.log('all stopped'))          
-      }     
-    }>Reset</button>   
-    <button onClick={()=>onGenerateCars()}>CREATE MANY CARS</button>  
+    <nav className="garage-menu">
+      <div className="car-edit-menu">
+        <CarFactoryWidget onAddCar={(car)=>{setCarStatusList(last=>{return [...last, {car, state: 'initial'}]})}}/> 
+        <CarUpdateWidget car={carForUpdate} onCarChanged={(car)=>{setCarForUpdate(car)}}/>
+        <button className="create-cars" onClick={()=>onGenerateCars()}>CREATE MANY CARS</button>
+      </div>
+      <div className="race-controls">
+        <div className="flag-icon">🏁</div><button className="race-button" onClick={()=>onRace()}>Race</button>
+        <button onClick={()=>{
+       //lets stop all cars by using cancelation token
+        Promise.allSettled(
+          carStatusList.map(data => {
+            console.log('reqCancell')
+            if (data.state == 'initial') {
+              console.log('warn')
+            }
+            return fetch(`http://localhost:3000/engine?status=stopped&id=${data.car.id}`,{method: "PATCH"}).then(res=>{
+              console.log('cancelled')
+              setCarStatusList(last=> {data.state = 'initial'; return [...last]})
+            });
+          })).then(()=>console.log('all stopped'))          
+        }}>Reset</button>
+    </div>   
     </nav>
     <div>
       <h2>Cars in garage: ({carCount})</h2>

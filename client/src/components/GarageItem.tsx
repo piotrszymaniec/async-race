@@ -17,19 +17,19 @@ export default function GarageItem(props:IGarageItemProps) {
 
   return(
     <div className='garage-item'>
-      <div>
-        <button onClick={()=>props.onSelect(props.carData)}>Select</button>
-        <button onClick={()=>props.onRemove()}>Remove</button>
-        <span className='car-name'>{props.carData.name}</span>
+      <div className='car-name'>{props.carData.name}</div>
+      <div className='garage-item-controls'>
+        <button className='change' onClick={()=>props.onSelect(props.carData)}>Change 🔧</button>
+        <button className='remove' onClick={()=>props.onRemove()}>Remove ❌</button>
       </div>
       <div>
-      <button onClick={()=>{
+        <button onClick={()=>{
          props.onStart()                
-        }}>Go</button>
+        }}>▶</button>
         <button onClick={()=>{
            props.onCancel()
         }        
-        }>Stop</button> 
+        }>◼</button> 
       </div>
       <div className={`car ${props.start != 'initial' && 'animate'}`} style={{animationDuration:`${time}ms`,animationPlayState:animationState=='paused'?'paused':'running'}}>
         <CarShape color={props.carData.color} />

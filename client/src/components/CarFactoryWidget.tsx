@@ -33,7 +33,7 @@ export default function CarFactoryWidget(props:CarFactoryWidgetProps) {
   } 
 
   return (
-    <div>
+    <div className="car-create">
       <input type="text" value={carName} onChange={newNameChange}/>
       <input type="color" color={carColor} onChange={carColorChange}/>
       <button disabled={isFetching} onClick={onCreateCar}>CREATE</button>

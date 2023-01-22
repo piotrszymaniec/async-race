@@ -1,0 +1,13 @@
+.pagination {
+  margin-top: 20px;
+
+  button {
+    background-color: #ffca10;
+    padding: 5px 12px;
+    font-size: 1.1em;
+
+    &:disabled {
+      background-color: #cbcbcb;
+    }
+  }
+}

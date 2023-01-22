@@ -1,16 +1,20 @@
 .garage-item {
-  height: 100px;
-  border-bottom: 1px solid white;
-  padding: 10px 0;
+  border-bottom: 6px dashed #4a4a4a;
+  padding-top: 10px;
 }
 
 .car {
   width: 80px;
+  height: 62px
 }
+
+.garage-item-controls {}
 
 .car-name {
   font-family: 'Ubuntu Mono', monospace;
-  margin-left: 1em;
+  font-size: 1.5em;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .animate {

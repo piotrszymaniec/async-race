@@ -2,3 +2,18 @@ body {
   background: rgb(14, 14, 14);
   color: white;
 }
+
+button {
+  cursor: pointer;
+}
+
+.menu {
+  background: #004077;
+  padding: 10px;
+}
+
+.menu button {
+  font-size: 1.25em;
+  border-radius: 10px;
+  padding: 5px 10px;
+}

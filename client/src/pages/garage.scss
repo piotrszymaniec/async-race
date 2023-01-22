@@ -1,9 +1,41 @@
-nav {
-  max-width: 30%;
+.car-edit-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
-.pageButton {
-  margin-right: 10px;
+.race-controls {
+  display: flex;
+  justify-content: flex-end;
+  height: 43px;
+  align-items: center;
+  margin-top: 13px;
+  font-size: 20px;
+
+  .flag-icon {
+    font-size: 30px;
+    padding: 5px;
+  }
+
+  .race-button {
+    margin-right: 10px;
+  }
+
+  button {
+    font-size: inherit;
+  }
 }
 
-.car-menu {}
+.car-update,
+.car-create {
+  display: flex;
+  height: fit-content;
+}
+
+.garage-menu {
+  margin-top: 10px;
+  max-width: fit-content;
+  border: 1px solid #616161;
+  padding: 10px;
+  background: aliceblue;
+}
