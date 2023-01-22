@@ -89,7 +89,7 @@ const onGenerateCars = () => {
   
   console.log('rerendered');
   return (
-  <div>
+  <div className="garage">
     <nav className="garage-menu">
       <div className="car-edit-menu">
         <CarFactoryWidget onAddCar={(car)=>{setCarStatusList(last=>{return [...last, {car, state: 'initial'}]})}}/> 

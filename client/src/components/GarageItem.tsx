@@ -22,7 +22,7 @@ export default function GarageItem(props:IGarageItemProps) {
         <button className='change' onClick={()=>props.onSelect(props.carData)}>Change 🔧</button>
         <button className='remove' onClick={()=>props.onRemove()}>Remove ❌</button>
       </div>
-      <div>
+      <div className='car-race-controls'>
         <button onClick={()=>{
          props.onStart()                
         }}>▶</button>
