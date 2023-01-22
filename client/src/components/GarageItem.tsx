@@ -10,6 +10,7 @@ interface IGarageItemProps {
   onCancel: ()=>void;
   onFinish: (result:string|number)=> void
   onRemove: ()=>void
+  onSelect: (car:ICar)=>void
 }
 
 export default function GarageItem(props:IGarageItemProps) {
@@ -50,6 +51,9 @@ export default function GarageItem(props:IGarageItemProps) {
 
   return(
     <div>
+      <div>
+        <button onClick={()=>props.onSelect(props.carData)}>Select</button>
+      </div>
       <div>
         <button onClick={()=>props.onRemove()}>Remove</button>
       </div>

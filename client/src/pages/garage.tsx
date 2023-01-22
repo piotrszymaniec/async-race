@@ -16,10 +16,10 @@ export default function Garage() {
   const [paginationPage,setPaginationPage] = useState(1)
   const [carStatusList, setCarStatusList] = useState<Array<{car:ICar, state:string | number}>>([])
   const [carCount, setCarCount] = useState(0)
-  
+  const [carForUpdate, setCarForUpdate] = useState({name:"",color:""})
   const [page, setPage] = useState(1)
   const [startRace, setStartRace] = useState<boolean>(false)
-
+  
 
   const results:Array<string|number> = []
   const startCarEngine = (id:number) => fetch(`http://localhost:3000/engine?status=started&id=${id}`,{method: "PATCH"})
@@ -98,6 +98,7 @@ export default function Garage() {
         })*/
       }} 
       /> 
+      <CarUpdateWidget car={carForUpdate} onCarChanged={(car)=>{setCarForUpdate(car)}}/>
       <button onClick={()=>{
       onRace()                   
     }}
@@ -126,6 +127,9 @@ export default function Garage() {
       return (
         <GarageItem 
         start={car.state} 
+        onSelect={(car:ICar)=>{
+          setCarForUpdate(car)
+        }}
         onStart={()=>{
           console.log('reqStart')
           fetch(`http://localhost:3000/engine?status=started&id=${car.car.id}`,{method: "PATCH"})
