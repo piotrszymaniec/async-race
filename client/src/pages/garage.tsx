@@ -145,18 +145,18 @@ const onGenerateCars = () => {
                 if (res.status == 200) {
                   removeWinner(carId)
                 }
-              })
-          
-              //update list
-              fetch(`http://localhost:3000/garage?_page=${page}&_limit=7` , {
-                method: "GET"
-              })
-              .then(res=>{
-                setCarCount(parseInt(res.headers.get("X-Total-Count")))
-                return res.json()}
-              )
-              .then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))      
+              })          
             }
+          }).then(status=>{
+            //update list
+            fetch(`http://localhost:3000/garage?_page=${page}&_limit=7` , {
+              method: "GET"
+            })
+            .then(res=>{
+              setCarCount(parseInt(res.headers.get("X-Total-Count")))
+              return res.json()}
+            )
+            .then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))      
           })
 
         }}
