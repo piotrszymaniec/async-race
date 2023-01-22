@@ -70,3 +70,8 @@ export function removeCar(id:number): Promise<number> {
     method:'DELETE'
   }).then(res=>res.status)
 }
+export function removeWinner(id:number): Promise<number> {
+  return fetch(url+`winners/${id}`,{
+    method:'DELETE'
+  }).then(res=>res.status)
+}
