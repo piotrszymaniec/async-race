@@ -15,13 +15,13 @@ export default function Winners() {
   const [sortOrder, setSortOrder] = useState<ISort>({ sort: 'id', order: 'ASC' })
 
   useEffect(() => {
-    getAllWinners(sortOrder).then(
+    getAllWinners(paginationPage, sortOrder).then(
       data => setWinners(data)
     )
     getAllCars().then(
       data => setCars(data)
     )
-  }, [sortOrder])
+  }, [sortOrder, paginationPage])
 
   return (
     <div className="winners">
