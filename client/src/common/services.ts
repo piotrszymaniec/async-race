@@ -45,7 +45,7 @@ export function getWinner(id:number): Promise<Response> {
   })
 }
 
-export function createWinner(id:number, wins:number, time:number) {
+export function createWinner(id:number, wins:number, time:number): Promise<IWinner> {
   return fetch(url+`winners`,{
     method: "POST",
     headers: {
@@ -54,7 +54,7 @@ export function createWinner(id:number, wins:number, time:number) {
     body: JSON.stringify({id, wins, time})
   }).then(res=>res.json())
 }
-export function updateWinner(id:number, wins:number, time:number) {
+export function updateWinner(id:number, wins:number, time:number): Promise<IWinner> {
   return fetch(url+`winners/${id}`,{
     method: "PUT",
     headers: {
@@ -75,14 +75,14 @@ export function removeWinner(id:number): Promise<number> {
   }).then(res=>res.status)
 }
 
-export function startCarEngine(id:number) {
+export function startCarEngine(id:number): Promise<Response> {
   return fetch(url+`engine?status=started&id=${id}`,{method: "PATCH"})
 }
-export function driveCar(id:number) {
+export function driveCar(id:number): Promise<Response> {
   return fetch(url+`engine?status=drive&id=${id}`,{method: "PATCH"})
 }
 
-export function getPage(page:number) {
+export function getPage(page:number): Promise<Response> {
     return fetch(url+`garage?_page=${page}&_limit=7` , {
       method: "GET"
     }) 
