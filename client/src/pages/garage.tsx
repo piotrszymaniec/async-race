@@ -1,4 +1,4 @@
-import React, { FormEvent, useEffect, useState } from "react"
+import React, { useEffect, useState } from "react"
 import generateCars from "../common/common"
 import ICar from "../common/ICar"
 import IWinner from "../common/IWinner"
