@@ -19,8 +19,17 @@ export default function Garage() {
   const [buttonsDisabledWhileRacing, setButtonsDisabledWhileRacing] = useState(false)
   const [showWinner, setShowWinner] = useState<boolean>(false)
   const [winner, setWinner] = useState<{name:string,time:number}>({name:"",time:0})
+  
+  useEffect(()=>{            
+    fetch(`http://localhost:3000/garage?_page=${paginationPage}&_limit=7` , {
+      method: "GET"
+    }).then(res=>{
+      setCarCount(parseInt(res.headers.get("X-Total-Count")))
+      return res.json()
+    }).then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))    
+  },[paginationPage])
 
-const onGenerateCars = () => {
+  const onGenerateCars = () => {
     const cars = generateCars()
     cars.forEach((car) => {        
         createCar(car.name, car.color)
@@ -31,9 +40,9 @@ const onGenerateCars = () => {
       setCarCount(carCount+cars.length)
   }  
 
-const showWinnerPopup = (name:string, time:number) => {
-  return <WinnerPopup name={name} time={time} />
-}
+  const showWinnerPopup = (name:string, time:number) => {
+    return <WinnerPopup name={name} time={time} />
+  }
 
   const onRace = ()=>{
     Promise.allSettled(carStatusList.map((carData,index) => {        
@@ -93,24 +102,28 @@ const showWinnerPopup = (name:string, time:number) => {
         setButtonsDisabledWhileRacing(false)
           })              
         })
-    }
-    
-  useEffect(()=>{            
-    fetch(`http://localhost:3000/garage?_page=${paginationPage}&_limit=7` , {
+    }   
+   
+  const refreshPage = (page:number) => {
+    fetch(`http://localhost:3000/garage?_page=${page}&_limit=7` , {
       method: "GET"
-    }).then(res=>{
+    })
+    .then(res=>{
       setCarCount(parseInt(res.headers.get("X-Total-Count")))
-      return res.json()
-    }).then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))    
-  },[paginationPage])
-  
+      return res.json()}
+    )
+    .then(data => setCarStatusList(data.map((car:ICar)=> ({car:car, state:'initial'})))) 
+  }
+
   return (
   <div className="garage">
     {showWinner && showWinnerPopup(winner.name,winner.time)}
     <nav className="garage-menu">
       <div className="car-edit-menu">
         <CarFactoryWidget disabled={buttonsDisabledWhileRacing} onAddCar={(car)=>{setCarStatusList(last=>{return [...last, {car, state: 'initial'}]})}}/> 
-        <CarUpdateWidget car={carForUpdate} onCarChanged={(car)=>{setCarForUpdate(car)}}/>
+        <CarUpdateWidget car={carForUpdate} onCarChanged={()=>{          
+          refreshPage(paginationPage)
+          }}/>
         <button disabled={buttonsDisabledWhileRacing} className="create-cars" onClick={()=>onGenerateCars()}>CREATE MANY CARS</button>
       </div>
       <div className="race-controls">
@@ -119,7 +132,9 @@ const showWinnerPopup = (name:string, time:number) => {
         Promise.allSettled(
           carStatusList.map(data => {
             return fetch(`http://localhost:3000/engine?status=stopped&id=${data.car.id}`,{method: "PATCH"}).then(res=>{
-              setCarStatusList(last=> {data.state = 'initial'; return [...last]})
+              setCarStatusList(last=> last.map(car=> {
+                return {...car, state:'initial'}
+              }))              
             });
           }))       
           setShowWinner(false)      
@@ -135,7 +150,7 @@ const showWinnerPopup = (name:string, time:number) => {
         <GarageItem 
         start={car.state} 
         onSelect={(car:ICar)=>{
-          setCarForUpdate(car)
+          setCarForUpdate(car)          
         }}
         onStart={()=>{
           fetch(`http://localhost:3000/engine?status=started&id=${car.car.id}`,{method: "PATCH"})
@@ -170,18 +185,11 @@ const showWinnerPopup = (name:string, time:number) => {
                 }
               })          
             }
-          }).then(status=>{
-            //update list
-            fetch(`http://localhost:3000/garage?_page=${page}&_limit=7` , {
-              method: "GET"
-            })
-            .then(res=>{
-              setCarCount(parseInt(res.headers.get("X-Total-Count")))
-              return res.json()}
-            )
-            .then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))      
           })
-
+          .then(status=>{
+            //update list
+            refreshPage(paginationPage)
+          })
         }}
         carData={car.car} 
         key={car.car.id} 
