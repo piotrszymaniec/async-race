@@ -57,7 +57,16 @@ const onGenerateCars = () => {
           if (r.status === 'fulfilled') {
             return r.value
           }
-       }).filter(r=>r.v!==0).sort((a,b)=>b.v-a.v).pop()
+       }).filter(r=>r.v!==0).sort((a,b)=>{
+        if (a.v === b.v) {
+          return 0
+        }
+        else if (a.v<b.v) {
+          return -1
+        } else {
+          1
+        }
+      }).pop()
         return winner        
       }).then(w=>{
           const time = Math.round(500000/w.v/10)/100
