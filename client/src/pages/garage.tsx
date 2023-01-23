@@ -15,7 +15,7 @@ export default function Garage() {
   const [carStatusList, setCarStatusList] = useState<Array<{ car: ICar, state: string | number }>>([])
   const [carCount, setCarCount] = useState(0)
   const [carForUpdate, setCarForUpdate] = useState({ name: "", color: "#000000" })
-  
+
   const [buttonsDisabledWhileRacing, setButtonsDisabledWhileRacing] = useState(false)
   const [showWinner, setShowWinner] = useState<boolean>(false)
   const [winner, setWinner] = useState<{ name: string, time: number }>({ name: "", time: 0 })
@@ -35,8 +35,8 @@ export default function Garage() {
     setCarCount(carCount + cars.length)
   }
 
-  const showWinnerPopup = (name: string, time: number) => {
-    return <WinnerPopup name={name} time={time} />
+  const showWinnerPopup = (name: string, time: number, visible: boolean) => {
+    return <WinnerPopup name={name} time={time} visible={visible} />
   }
 
   const onRace = () => {
@@ -110,7 +110,7 @@ export default function Garage() {
 
   return (
     <div className="garage">
-      {showWinner && showWinnerPopup(winner.name, winner.time)}
+      {showWinner && showWinnerPopup(winner.name, winner.time, showWinner)}
       <nav className="garage-menu">
         <div className="car-edit-menu">
           <CarFactoryWidget disabled={buttonsDisabledWhileRacing} onAddCar={(car) => { setCarStatusList(last => { return [...last, { car, state: 'initial' }] }) }} />
