@@ -15,7 +15,7 @@ export function getAllCars(): Promise<Array<ICar>> {
   }).then(res=>res.json())
 }
 export function createCar(name:string, color:string): Promise<ICar> {
-  return fetch('http://localhost:3000/garage', {
+  return fetch(url+'garage', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -35,18 +35,18 @@ export function updateCar(car:ICar): Promise<ICar> {
 }
 
 export function getAllWinners(sortOrder:ISort): Promise<Array<IWinner>> { 
-  return fetch(`http://localhost:3000/winners?_sort=${sortOrder.sort}&_order=${sortOrder.order}`, {
+  return fetch(url+`winners?_sort=${sortOrder.sort}&_order=${sortOrder.order}`, {
     method: "GET"
 }).then(res=>res.json())}
 
 export function getWinner(id:number): Promise<Response> { 
-  return fetch(`http://localhost:3000/winners/${id}`, {
+  return fetch(url+`winners/${id}`, {
     method: "GET"
   })
 }
 
 export function createWinner(id:number, wins:number, time:number) {
-  return fetch(`http://localhost:3000/winners`,{
+  return fetch(url+`winners`,{
     method: "POST",
     headers: {
       'Content-Type': 'application/json'
@@ -55,7 +55,7 @@ export function createWinner(id:number, wins:number, time:number) {
   }).then(res=>res.json())
 }
 export function updateWinner(id:number, wins:number, time:number) {
-  return fetch(`http://localhost:3000/winners/${id}`,{
+  return fetch(url+`winners/${id}`,{
     method: "PUT",
     headers: {
       'Content-Type': 'application/json'
@@ -76,8 +76,8 @@ export function removeWinner(id:number): Promise<number> {
 }
 
 export function startCarEngine(id:number) {
-  return fetch(`http://localhost:3000/engine?status=started&id=${id}`,{method: "PATCH"})
+  return fetch(url+`engine?status=started&id=${id}`,{method: "PATCH"})
 }
 export function driveCar(id:number) {
-  return fetch(`http://localhost:3000/engine?status=drive&id=${id}`,{method: "PATCH"})
+  return fetch(url+`engine?status=drive&id=${id}`,{method: "PATCH"})
 }
