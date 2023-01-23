@@ -15,7 +15,7 @@ export default function Garage() {
   const [carStatusList, setCarStatusList] = useState<Array<{ car: ICar, state: string | number }>>([])
   const [carCount, setCarCount] = useState(0)
   const [carForUpdate, setCarForUpdate] = useState({ name: "", color: "#000000" })
-  const [page, setPage] = useState(1)
+  
   const [buttonsDisabledWhileRacing, setButtonsDisabledWhileRacing] = useState(false)
   const [showWinner, setShowWinner] = useState<boolean>(false)
   const [winner, setWinner] = useState<{ name: string, time: number }>({ name: "", time: 0 })
@@ -190,8 +190,8 @@ export default function Garage() {
           )
         })}
       </div>
-      <Pagination perPage={7} count={carCount} page={paginationPage} onChange={(page) => {
-        setPaginationPage(page)
+      <Pagination perPage={7} count={carCount} page={paginationPage} onChange={(currentPage: number) => {
+        setPaginationPage(currentPage)
       }} />
     </div>)
 }
