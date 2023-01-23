@@ -1,10 +1,12 @@
+$carWidth: 80px;
+
 .garage-item {
   border-bottom: 6px dashed #4a4a4a;
   padding-top: 10px;
 }
 
 .car {
-  width: 80px;
+  width: $carWidth;
   height: 62px
 }
 
@@ -34,6 +36,6 @@
   }
 
   to {
-    margin-left: calc(100% - 50px);
+    margin-left: calc(100% - $carWidth);
   }
 }
