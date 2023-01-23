@@ -103,7 +103,7 @@ export default function Garage() {
         setCarCount(parseInt(res.headers.get("X-Total-Count")))
         return res.json()
       })
-      .then(data => setCarStatusList(data.map((car: ICar) => ({ car: car, state: 'initial' }))))
+      .then(data => setCarStatusList(data.map((car: ICar) => ({ car, state: 'initial' }))))
   }
 
   return (
