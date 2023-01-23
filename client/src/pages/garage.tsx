@@ -8,7 +8,7 @@ import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
 import Pagination from '../components/Pagination'
 import WinnerPopup from '../components/WinnerPopup'
-import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner, startCarEngine, driveCar, getPage, stopCarEngine } from "../common/services"
+import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner, startCarEngine, driveCar, getGaragePage, stopCarEngine } from "../common/services"
 
 export default function Garage() {
   const [paginationPage, setPaginationPage] = useState(1)
@@ -100,12 +100,11 @@ export default function Garage() {
   }
 
   const refreshPage = (page: number) => {
-    getPage(page)
+    getGaragePage(page)
       .then(res => {
         setCarCount(parseInt(res.headers.get("X-Total-Count")))
         return res.json()
-      }
-      )
+      })
       .then(data => setCarStatusList(data.map((car: ICar) => ({ car: car, state: 'initial' }))))
   }
 

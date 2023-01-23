@@ -86,7 +86,7 @@ export function driveCar(id: number): Promise<Response> {
   return fetch(url + `engine?status=drive&id=${id}`, { method: "PATCH" })
 }
 
-export function getPage(page: number): Promise<Response> {
+export function getGaragePage(page: number): Promise<Response> {
   return fetch(url + `garage?_page=${page}&_limit=7`, {
     method: "GET"
   })
