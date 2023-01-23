@@ -4,11 +4,11 @@ import ICar from "../common/ICar"
 import IWinner from "../common/IWinner"
 import GarageItem from '../components/GarageItem'
 import CarFactoryWidget from "../components/CarFactoryWidget"
-import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
 import Pagination from '../components/Pagination'
 import WinnerPopup from '../components/WinnerPopup'
 import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner, startCarEngine, driveCar, getGaragePage, stopCarEngine } from "../common/services"
+import "./garage.scss"
 
 export default function Garage() {
   const [paginationPage, setPaginationPage] = useState(1)
