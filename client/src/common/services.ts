@@ -24,6 +24,16 @@ export function createCar(name:string, color:string): Promise<ICar> {
   }).then(res=>res.json())
 }
 
+export function updateCar(car:ICar): Promise<ICar> {
+  return fetch(url+`garage/${car.id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({name: car.name, color: car.color})
+  }).then(res=>res.json())
+}
+
 export function getAllWinners(sortOrder:ISort): Promise<Array<IWinner>> { 
   return fetch(`http://localhost:3000/winners?_sort=${sortOrder.sort}&_order=${sortOrder.order}`, {
     method: "GET"

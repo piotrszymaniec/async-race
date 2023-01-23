@@ -1,5 +1,6 @@
 import React, { FormEvent, useEffect, useState } from "react"
 import ICar from '../common/ICar'
+import { updateCar } from "../common/services"
 
 interface CarUpdateWidgetProps {  
   car: ICar  
@@ -16,13 +17,7 @@ export default function CarUpdateWidget(props:CarUpdateWidgetProps) {
     <input type="color" name="car-color" id="car-color" value={car.color} onChange={(e:FormEvent<HTMLInputElement>)=>setCar({...car, color:e.currentTarget.value})}/>
     <button onClick={()=>{      
       props.onCarChanged(car)
-      fetch(`http://localhost:3000/garage/${props.car.id}`,{
-      method: 'PUT',
-      headers:{
-	      'Content-Type':'application/json'
-      },
-	    body: JSON.stringify({name: car.name, color: car.color})
-    })
+      updateCar(car)
     }}
     disabled={props.car.name ===""}
     >UPDATE</button>
