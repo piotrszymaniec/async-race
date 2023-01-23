@@ -7,6 +7,7 @@ import CarFactoryWidget from "../components/CarFactoryWidget"
 import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
 import Pagination from '../components/Pagination'
+import WinnerPopup from '../components/WinnerPopup'
 import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner, startCarEngine, driveCar } from "../common/services"
 
 export default function Garage() {
@@ -16,8 +17,8 @@ export default function Garage() {
   const [carForUpdate, setCarForUpdate] = useState({name:"",color:""})
   const [page, setPage] = useState(1)   
   const [buttonsDisabledWhileRacing, setButtonsDisabledWhileRacing] = useState(false)
-  const startCarEngine = (id:number) => fetch(`http://localhost:3000/engine?status=started&id=${id}`,{method: "PATCH"})
-  const driveCar = (id:number) => fetch(`http://localhost:3000/engine?status=drive&id=${id}`,{method: "PATCH"})
+  const [showWinner, setShowWinner] = useState<boolean>(false)
+  const [winner, setWinner] = useState<{name:string,time:number}>({name:"",time:0})
 
 const onGenerateCars = () => {
     const cars = generateCars()
@@ -29,6 +30,10 @@ const onGenerateCars = () => {
       })                          
       setCarCount(carCount+cars.length)
   }  
+
+const showWinnerPopup = (name:string, time:number) => {
+  return <WinnerPopup name={name} time={time} />
+}
 
   const onRace = ()=>{
     Promise.allSettled(carStatusList.map((carData,index) => {        
@@ -44,10 +49,10 @@ const onGenerateCars = () => {
             .then(res=>{
                   if(res.status ===200) {
                     setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
-                    return {id:carData.car.id, v:v.velocity}
+                    return {id:carData.car.id, name:carData.car.name, v:v.velocity}
                   } else {
                     setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
-                    return {id:carData.car.id, v:0}
+                    return {id:carData.car.id, name:carData.car.name, v:0}
                   }   
             })
         })      
@@ -74,12 +79,19 @@ const onGenerateCars = () => {
             if (res.status === 404) {
               //create new winner
               return createWinner(w.id, 1, time).then(car=>{
+                return {name:w.name, time:time}
+              })
             } else if (res.status === 200){
-              return res.json().then((w1:IWinner) => updateWinner(w.id,w1.wins+1,w1.time<time?w1.time:time))
+              return res.json().then((w1:IWinner) => updateWinner(w.id,w1.wins+1,w1.time<time?w1.time:time)).then(car=>{
+                return {name:w.name, time:time}
+              })
               //increment
             }           
-          })               
+          }).then(winner=>{
+            setWinner({name:winner.name, time:winner.time})  
+            setShowWinner(true)  
         setButtonsDisabledWhileRacing(false)
+          })              
         })
     }
     
@@ -94,6 +106,7 @@ const onGenerateCars = () => {
   
   return (
   <div className="garage">
+    {showWinner && showWinnerPopup(winner.name,winner.time)}
     <nav className="garage-menu">
       <div className="car-edit-menu">
         <CarFactoryWidget disabled={buttonsDisabledWhileRacing} onAddCar={(car)=>{setCarStatusList(last=>{return [...last, {car, state: 'initial'}]})}}/> 
@@ -109,6 +122,7 @@ const onGenerateCars = () => {
               setCarStatusList(last=> {data.state = 'initial'; return [...last]})
             });
           }))       
+          setShowWinner(false)      
         }}>Reset</button>
     </div>   
     </nav>
