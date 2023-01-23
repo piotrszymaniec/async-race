@@ -32,7 +32,7 @@ export default function GarageItem(props: IGarageItemProps) {
         }
         }>◼</button>
       </div>
-      <div className={`car ${props.start != 'initial' && 'animate'}`} style={{ animationDuration: `${time}ms`, animationPlayState: animationState == 'paused' ? 'paused' : 'running' }}>
+      <div className={`car ${props.start != 'initial' ? 'animate' : ''}`} style={{ animationDuration: `${time}ms`, animationPlayState: animationState == 'paused' ? 'paused' : 'running' }}>
         <CarShape color={props.carData.color} />
       </div>
     </div>
