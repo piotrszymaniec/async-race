@@ -45,7 +45,7 @@ export default function Winners() {
             return (
               <tr key={index}>
                 <td>{data.id}</td>                
-                <td><CarShape color={data.color} /></td>
+                <td><div className="car"><CarShape color={data.color} /></div></td>
                 <td>{data.name}</td>                
                 <td>{data.wins}</td>
                 <td>{data.time}</td>     
