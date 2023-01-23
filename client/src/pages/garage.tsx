@@ -81,7 +81,6 @@ export default function Garage() {
       const time = Math.round(500000 / w.v / 10) / 100
       return getWinner(w.id).then(res => {
         if (res.status === 404) {
-          //create new winner
           return createWinner(w.id, 1, time).then(car => {
             return { name: w.name, time: time }
           })
@@ -89,7 +88,6 @@ export default function Garage() {
           return res.json().then((w1: IWinner) => updateWinner(w.id, w1.wins + 1, w1.time < time ? w1.time : time)).then(car => {
             return { name: w.name, time: time }
           })
-          //increment
         }
       }).then(winner => {
         setWinner({ name: winner.name, time: winner.time })
@@ -180,7 +178,6 @@ export default function Garage() {
                   }
                 })
                   .then(status => {
-                    //update list
                     refreshPage(paginationPage)
                   })
               }}
