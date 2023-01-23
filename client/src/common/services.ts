@@ -34,10 +34,10 @@ export function updateCar(car: ICar): Promise<ICar> {
   }).then(res => res.json())
 }
 
-export function getAllWinners(page: number, sortOrder: ISort): Promise<Array<IWinner>> {
+export function getWinnersPage(page: number, sortOrder: ISort): Promise<Response> {
   return fetch(url + `winners?_limit=7&_sort=${sortOrder.sort}&_order=${sortOrder.order}&_page=${page}`, {
     method: "GET"
-  }).then(res => res.json())
+  })
 }
 
 export function getWinner(id: number): Promise<Response> {

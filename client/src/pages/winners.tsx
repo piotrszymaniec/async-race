@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react"
 import ICar from "../common/ICar"
 import IWinner from "../common/IWinner"
 import ISort from "../common/ISort"
-import { getAllCars, getAllWinners } from "../common/services"
+import { getAllCars, getWinnersPage } from "../common/services"
 import CarShape from "../components/CarShape"
 import Pagination from "../components/Pagination"
 import "./winners.scss"
@@ -12,12 +12,16 @@ export default function Winners() {
   const [winners, setWinners] = useState<Array<IWinner>>([])
   const [cars, setCars] = useState<Array<ICar>>([])
   const [paginationPage, setPaginationPage] = useState(1)
+  const [winnersCount, setWinnersCount] = useState(0)
   const [sortOrder, setSortOrder] = useState<ISort>({ sort: 'id', order: 'ASC' })
 
   useEffect(() => {
-    getAllWinners(paginationPage, sortOrder).then(
-      data => setWinners(data)
-    )
+    getWinnersPage(paginationPage, sortOrder).then(res => {
+      setWinnersCount(parseInt(res.headers.get("X-Total-Count")))
+      return res.json()
+    }).then(data => {
+      setWinners(data)
+    })
     getAllCars().then(
       data => setCars(data)
     )
@@ -25,7 +29,7 @@ export default function Winners() {
 
   return (
     <div className="winners">
-      <h2>Winners ({winners.length})</h2>
+      <h2>Winners ({winnersCount})</h2>
       <h3>Page # {paginationPage}</h3>
       <table>
         <thead>
