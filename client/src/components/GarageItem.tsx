@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import ICar from '../common/ICar'
 import CarShape from './CarShape'
-import './garage-item.css'
+import './garage-item.scss'
 interface IGarageItemProps {
   carData: ICar;
   start: number | string;
@@ -19,14 +19,14 @@ export default function GarageItem(props: IGarageItemProps) {
     <div className='garage-item'>
       <div className='car-name'>{props.carData.name}</div>
       <div className='garage-item-controls'>
-        <button className='change' onClick={() => props.onSelect(props.carData)}>Change 🔧</button>
-        <button className='remove' onClick={() => props.onRemove()}>Remove ❌</button>
+        <button className='change' title='Change car details' onClick={() => props.onSelect(props.carData)}>Change 🔧</button>
+        <button className='remove' title='Remove car from garage and winners' onClick={() => props.onRemove()}>Remove ❌</button>
       </div>
       <div className='car-race-controls'>
-        <button onClick={() => {
+        <button title='Start car' onClick={() => {
           props.onStart()
         }}>▶</button>
-        <button onClick={() => {
+        <button title='Stop car' onClick={() => {
           props.onCancel()
         }
         }>◼</button>
