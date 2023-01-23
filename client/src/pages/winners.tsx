@@ -37,8 +37,8 @@ export default function Winners() {
             <th className="sort" onClick={() => setSortOrder(so => (so.order === 'DESC') ? { sort: 'id', order: 'ASC' } : { sort: 'id', order: 'DESC' })}>Number</th>
             <th>Car</th>
             <th>Name</th>
-            <th className="sort" onClick={() => setSortOrder(so => (so.order === 'DESC') ? { sort: 'wins', order: 'ASC' } : { sort: 'id', order: 'DESC' })}>Wins</th>
-            <th className="sort" onClick={() => setSortOrder(so => (so.order === 'DESC') ? { sort: 'time', order: 'ASC' } : { sort: 'id', order: 'DESC' })}>Best time (seconds)</th>
+            <th className="sort" onClick={() => setSortOrder(so => (so.order === 'DESC') ? { sort: 'wins', order: 'ASC' } : { sort: 'wins', order: 'DESC' })}>Wins</th>
+            <th className="sort" onClick={() => setSortOrder(so => (so.order === 'DESC') ? { sort: 'time', order: 'ASC' } : { sort: 'time', order: 'DESC' })}>Best time (seconds)</th>
           </tr>
         </thead>
         <tbody>
