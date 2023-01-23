@@ -5,7 +5,7 @@ interface WinnerPopupProps {
   name: string
   time: number
 }
-export default function WinnerPopup(props:WinnerPopupProps) {
+export default function WinnerPopup(props: WinnerPopupProps) {
   return (<div className='winner-popup'>
     <div>Race Winner</div>
     <div>{props.name}</div>

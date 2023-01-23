@@ -11,187 +11,188 @@ import WinnerPopup from '../components/WinnerPopup'
 import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner, startCarEngine, driveCar, getPage } from "../common/services"
 
 export default function Garage() {
-  const [paginationPage,setPaginationPage] = useState(1)
-  const [carStatusList, setCarStatusList] = useState<Array<{car:ICar, state:string | number}>>([])
+  const [paginationPage, setPaginationPage] = useState(1)
+  const [carStatusList, setCarStatusList] = useState<Array<{ car: ICar, state: string | number }>>([])
   const [carCount, setCarCount] = useState(0)
-  const [carForUpdate, setCarForUpdate] = useState({name:"",color:""})
-  const [page, setPage] = useState(1)   
+  const [carForUpdate, setCarForUpdate] = useState({ name: "", color: "" })
+  const [page, setPage] = useState(1)
   const [buttonsDisabledWhileRacing, setButtonsDisabledWhileRacing] = useState(false)
   const [showWinner, setShowWinner] = useState<boolean>(false)
-  const [winner, setWinner] = useState<{name:string,time:number}>({name:"",time:0})
-  
-  useEffect(()=>{            
+  const [winner, setWinner] = useState<{ name: string, time: number }>({ name: "", time: 0 })
+
+  useEffect(() => {
     refreshPage(paginationPage)
-  },[paginationPage])
+  }, [paginationPage])
 
   const onGenerateCars = () => {
     const cars = generateCars()
-    cars.forEach((car) => {        
-        createCar(car.name, car.color)
+    cars.forEach((car) => {
+      createCar(car.name, car.color)
         .catch(error => {
-          console.log(error)          
+          console.log(error)
         })
-      })                          
-      setCarCount(carCount+cars.length)
-  }  
+    })
+    setCarCount(carCount + cars.length)
+  }
 
-  const showWinnerPopup = (name:string, time:number) => {
+  const showWinnerPopup = (name: string, time: number) => {
     return <WinnerPopup name={name} time={time} />
   }
 
-  const onRace = ()=>{
-    Promise.allSettled(carStatusList.map((carData,index) => {        
-        setButtonsDisabledWhileRacing(true)
-        return startCarEngine(carData.car.id)
-        .then(res=>{                    
+  const onRace = () => {
+    Promise.allSettled(carStatusList.map((carData, index) => {
+      setButtonsDisabledWhileRacing(true)
+      return startCarEngine(carData.car.id)
+        .then(res => {
           return res.json()
         })
         .then((v) => {
-          const time = v.distance/v.velocity
-          setCarStatusList(last=> {last[index].state = time; return [...last]})  
+          const time = v.distance / v.velocity
+          setCarStatusList(last => { last[index].state = time; return [...last] })
           return driveCar(carData.car.id)
-            .then(res=>{
-                  if(res.status ===200) {
-                    setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
-                    return {id:carData.car.id, name:carData.car.name, v:v.velocity}
-                  } else {
-                    setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
-                    return {id:carData.car.id, name:carData.car.name, v:0}
-                  }   
+            .then(res => {
+              if (res.status === 200) {
+                setCarStatusList(last => { last[index].state = 'paused'; return [...last] })
+                return { id: carData.car.id, name: carData.car.name, v: v.velocity }
+              } else {
+                setCarStatusList(last => { last[index].state = 'paused'; return [...last] })
+                return { id: carData.car.id, name: carData.car.name, v: 0 }
+              }
             })
-        })      
-      })      
-      ).then(res=>{
-        const winner = res.map(r=>{
-          if (r.status === 'fulfilled') {
-            return r.value
-          }
-       }).filter(r=>r.v!==0).sort((a,b)=>{
+        })
+    })
+    ).then(res => {
+      const winner = res.map(r => {
+        if (r.status === 'fulfilled') {
+          return r.value
+        }
+      }).filter(r => r.v !== 0).sort((a, b) => {
         if (a.v === b.v) {
           return 0
         }
-        else if (a.v<b.v) {
+        else if (a.v < b.v) {
           return -1
         } else {
           1
         }
       }).pop()
-        return winner        
-      }).then(w=>{
-          const time = Math.round(500000/w.v/10)/100
-          return getWinner(w.id).then(res=>{
-            if (res.status === 404) {
-              //create new winner
-              return createWinner(w.id, 1, time).then(car=>{
-                return {name:w.name, time:time}
-              })
-            } else if (res.status === 200){
-              return res.json().then((w1:IWinner) => updateWinner(w.id,w1.wins+1,w1.time<time?w1.time:time)).then(car=>{
-                return {name:w.name, time:time}
-              })
-              //increment
-            }           
-          }).then(winner=>{
-            setWinner({name:winner.name, time:winner.time})  
-            setShowWinner(true)  
+      return winner
+    }).then(w => {
+      const time = Math.round(500000 / w.v / 10) / 100
+      return getWinner(w.id).then(res => {
+        if (res.status === 404) {
+          //create new winner
+          return createWinner(w.id, 1, time).then(car => {
+            return { name: w.name, time: time }
+          })
+        } else if (res.status === 200) {
+          return res.json().then((w1: IWinner) => updateWinner(w.id, w1.wins + 1, w1.time < time ? w1.time : time)).then(car => {
+            return { name: w.name, time: time }
+          })
+          //increment
+        }
+      }).then(winner => {
+        setWinner({ name: winner.name, time: winner.time })
+        setShowWinner(true)
         setButtonsDisabledWhileRacing(false)
-          })              
-        })
-    }   
-   
-  const refreshPage = (page:number) => {
+      })
+    })
+  }
+
+  const refreshPage = (page: number) => {
     getPage(page)
-    .then(res=>{
-      setCarCount(parseInt(res.headers.get("X-Total-Count")))
-      return res.json()}
-    )
-    .then(data => setCarStatusList(data.map((car:ICar)=> ({car:car, state:'initial'})))) 
+      .then(res => {
+        setCarCount(parseInt(res.headers.get("X-Total-Count")))
+        return res.json()
+      }
+      )
+      .then(data => setCarStatusList(data.map((car: ICar) => ({ car: car, state: 'initial' }))))
   }
 
   return (
-  <div className="garage">
-    {showWinner && showWinnerPopup(winner.name,winner.time)}
-    <nav className="garage-menu">
-      <div className="car-edit-menu">
-        <CarFactoryWidget disabled={buttonsDisabledWhileRacing} onAddCar={(car)=>{setCarStatusList(last=>{return [...last, {car, state: 'initial'}]})}}/> 
-        <CarUpdateWidget car={carForUpdate} onCarChanged={()=>{          
-          refreshPage(paginationPage)
-          }}/>
-        <button disabled={buttonsDisabledWhileRacing} className="create-cars" onClick={()=>onGenerateCars()}>CREATE MANY CARS</button>
-      </div>
-      <div className="race-controls">
-        <div className="flag-icon">🏁</div><button className="race-button" onClick={()=>onRace()}>Race</button>
-        <button onClick={()=>{
-        Promise.allSettled(
-          carStatusList.map(data => {
-            return fetch(`http://localhost:3000/engine?status=stopped&id=${data.car.id}`,{method: "PATCH"}).then(res=>{
-              setCarStatusList(last=> last.map(car=> {
-                return {...car, state:'initial'}
-              }))              
-            });
-          }))       
-          setShowWinner(false)      
-        }}>Reset</button>
-    </div>   
-    </nav>
-    <div>
-      <h2>Cars in garage: ({carCount})</h2>
-      <h3>Page number: {paginationPage}</h3>      
-    
-    {carStatusList.map((car,index) => {      
-      return (
-        <GarageItem 
-        start={car.state} 
-        onSelect={(car:ICar)=>{
-          setCarForUpdate(car)          
-        }}
-        onStart={()=>{
-          fetch(`http://localhost:3000/engine?status=started&id=${car.car.id}`,{method: "PATCH"})
-            .then(res=>{
-              return res.json()
-            })
-            .then(res=>{
-              const time = res.distance/res.velocity
-              setCarStatusList(last=> {last[index].state = time; return [...last]})              
-              fetch(`http://localhost:3000/engine?status=drive&id=${car.car.id}`,{method: "PATCH"}).then(res=>{
-                  if(res.status ===200) {
-                    setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
-                  } else {
-                    setCarStatusList(last=> {last[index].state = 'paused'; return [...last]})
-                  }                  
-              })
-            })                      
-        }} 
-        onCancel = {()=>{
-          fetch(`http://localhost:3000/engine?status=stopped&id=${car.car.id}`,{method: "PATCH"}).then(res=>{
-            setCarStatusList(last=> {last[index].state = 'initial'; return [...last]})
-          });
-        }}
-
-        onRemove = {()=>{
-          const carId = car.car.id
-          removeCar(carId).then(status=>{
-            if (status == 200) {
-              getWinner(carId).then(res=>{
-                if (res.status == 200) {
-                  removeWinner(carId)
-                }
-              })          
-            }
-          })
-          .then(status=>{
-            //update list
+    <div className="garage">
+      {showWinner && showWinnerPopup(winner.name, winner.time)}
+      <nav className="garage-menu">
+        <div className="car-edit-menu">
+          <CarFactoryWidget disabled={buttonsDisabledWhileRacing} onAddCar={(car) => { setCarStatusList(last => { return [...last, { car, state: 'initial' }] }) }} />
+          <CarUpdateWidget car={carForUpdate} onCarChanged={() => {
             refreshPage(paginationPage)
-          })
-        }}
-        carData={car.car} 
-        key={car.car.id} 
-      />
-      )
-    })}
-    </div>
-      <Pagination perPage={7} count={carCount} page={paginationPage} onChange={(page)=>{
+          }} />
+          <button disabled={buttonsDisabledWhileRacing} className="create-cars" onClick={() => onGenerateCars()}>CREATE MANY CARS</button>
+        </div>
+        <div className="race-controls">
+          <div className="flag-icon">🏁</div><button className="race-button" onClick={() => onRace()}>Race</button>
+          <button onClick={() => {
+            Promise.allSettled(
+              carStatusList.map(data => {
+                return fetch(`http://localhost:3000/engine?status=stopped&id=${data.car.id}`, { method: "PATCH" }).then(res => {
+                  setCarStatusList(last => last.map(car => {
+                    return { ...car, state: 'initial' }
+                  }))
+                });
+              }))
+            setShowWinner(false)
+          }}>Reset</button>
+        </div>
+      </nav>
+      <div>
+        <h2>Cars in garage: ({carCount})</h2>
+        <h3>Page number: {paginationPage}</h3>
+
+        {carStatusList.map((car, index) => {
+          return (
+            <GarageItem
+              start={car.state}
+              onSelect={(car: ICar) => {
+                setCarForUpdate(car)
+              }}
+              onStart={() => {
+                fetch(`http://localhost:3000/engine?status=started&id=${car.car.id}`, { method: "PATCH" })
+                  .then(res => {
+                    return res.json()
+                  })
+                  .then(res => {
+                    const time = res.distance / res.velocity
+                    setCarStatusList(last => { last[index].state = time; return [...last] })
+                    fetch(`http://localhost:3000/engine?status=drive&id=${car.car.id}`, { method: "PATCH" }).then(res => {
+                      if (res.status === 200) {
+                        setCarStatusList(last => { last[index].state = 'paused'; return [...last] })
+                      } else {
+                        setCarStatusList(last => { last[index].state = 'paused'; return [...last] })
+                      }
+                    })
+                  })
+              }}
+              onCancel={() => {
+                fetch(`http://localhost:3000/engine?status=stopped&id=${car.car.id}`, { method: "PATCH" }).then(res => {
+                  setCarStatusList(last => { last[index].state = 'initial'; return [...last] })
+                });
+              }}
+
+              onRemove={() => {
+                const carId = car.car.id
+                removeCar(carId).then(status => {
+                  if (status == 200) {
+                    getWinner(carId).then(res => {
+                      if (res.status == 200) {
+                        removeWinner(carId)
+                      }
+                    })
+                  }
+                })
+                  .then(status => {
+                    //update list
+                    refreshPage(paginationPage)
+                  })
+              }}
+              carData={car.car}
+              key={car.car.id}
+            />
+          )
+        })}
+      </div>
+      <Pagination perPage={7} count={carCount} page={paginationPage} onChange={(page) => {
         setPaginationPage(page)
-      }}/>    
-  </div>)  
+      }} />
+    </div>)
 }
