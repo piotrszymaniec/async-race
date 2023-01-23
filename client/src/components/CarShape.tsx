@@ -1,9 +1,9 @@
 import React from 'react';
 
-interface ICarShape {
+interface ICarShapeProps {
   color: string,
 }
-export default function CarShape(props: ICarShape) {
+export default function CarShape(props: ICarShapeProps) {
   const color = props.color
   return (
     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" fill={props.color}
