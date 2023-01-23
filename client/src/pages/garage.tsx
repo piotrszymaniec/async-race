@@ -152,11 +152,7 @@ export default function Garage() {
                     const time = res.distance / res.velocity
                     setCarStatusList(last => { last[index].state = time; return [...last] })
                     driveCar(car.car.id).then(res => {
-                      if (res.status === 200) {
-                        setCarStatusList(last => { last[index].state = 'paused'; return [...last] })
-                      } else {
-                        setCarStatusList(last => { last[index].state = 'paused'; return [...last] })
-                      }
+                      setCarStatusList(last => { last[index].state = time; return [...last] })
                     })
                   })
               }}
