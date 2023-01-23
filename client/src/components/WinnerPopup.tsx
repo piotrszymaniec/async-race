@@ -7,8 +7,8 @@ interface WinnerPopupProps {
 }
 export default function WinnerPopup(props: WinnerPopupProps) {
   return (<div className='winner-popup'>
-    <div>Race Winner</div>
-    <div>{props.name}</div>
-    <div>{props.time}sec</div>
+    <div className='icon'>🥇</div>
+    <div className='name'>{props.name}</div>
+    <div className='time'>{props.time} sec</div>
   </div>)
 }

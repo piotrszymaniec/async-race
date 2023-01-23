@@ -2,14 +2,24 @@
   width: 300px;
   height: 150px;
   position: fixed;
-  background: black;
-  color: #8ad7ff;
-  border: 4px solid #0b72be;
+  background: #6f2985;
+  color: #ffffff;
+  // border: 4px solid #0b72be;
+  border-radius: 1.5em;
   left: 40%;
   top: 20%;
   flex-direction: column;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 2em;
+  font-family: "Work Sans", sans-serif;
+
+  .icon {
+    font-size: 3em;
+  }
+
+  .name,
+  .time {
+    font-size: 1.3em;
+  }
 }
