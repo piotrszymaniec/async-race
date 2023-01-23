@@ -79,6 +79,9 @@ export function removeWinner(id: number): Promise<number> {
 export function startCarEngine(id: number): Promise<Response> {
   return fetch(url + `engine?status=started&id=${id}`, { method: "PATCH" })
 }
+export function stopCarEngine(id: number): Promise<Response> {
+  return fetch(url + `engine?status=started&id=${id}`, { method: "PATCH" })
+}
 export function driveCar(id: number): Promise<Response> {
   return fetch(url + `engine?status=drive&id=${id}`, { method: "PATCH" })
 }

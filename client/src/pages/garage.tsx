@@ -8,7 +8,7 @@ import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
 import Pagination from '../components/Pagination'
 import WinnerPopup from '../components/WinnerPopup'
-import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner, startCarEngine, driveCar, getPage } from "../common/services"
+import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner, startCarEngine, driveCar, getPage, stopCarEngine } from "../common/services"
 
 export default function Garage() {
   const [paginationPage, setPaginationPage] = useState(1)
@@ -125,7 +125,7 @@ export default function Garage() {
           <button onClick={() => {
             Promise.allSettled(
               carStatusList.map(data => {
-                return fetch(`http://localhost:3000/engine?status=stopped&id=${data.car.id}`, { method: "PATCH" }).then(res => {
+                return stopCarEngine(data.car.id).then(res => {
                   setCarStatusList(last => last.map(car => {
                     return { ...car, state: 'initial' }
                   }))
@@ -147,14 +147,14 @@ export default function Garage() {
                 setCarForUpdate(car)
               }}
               onStart={() => {
-                fetch(`http://localhost:3000/engine?status=started&id=${car.car.id}`, { method: "PATCH" })
+                startCarEngine(car.car.id)
                   .then(res => {
                     return res.json()
                   })
                   .then(res => {
                     const time = res.distance / res.velocity
                     setCarStatusList(last => { last[index].state = time; return [...last] })
-                    fetch(`http://localhost:3000/engine?status=drive&id=${car.car.id}`, { method: "PATCH" }).then(res => {
+                    driveCar(car.car.id).then(res => {
                       if (res.status === 200) {
                         setCarStatusList(last => { last[index].state = 'paused'; return [...last] })
                       } else {
@@ -164,7 +164,7 @@ export default function Garage() {
                   })
               }}
               onCancel={() => {
-                fetch(`http://localhost:3000/engine?status=stopped&id=${car.car.id}`, { method: "PATCH" }).then(res => {
+                stopCarEngine(car.car.id).then(res => {
                   setCarStatusList(last => { last[index].state = 'initial'; return [...last] })
                 });
               }}
