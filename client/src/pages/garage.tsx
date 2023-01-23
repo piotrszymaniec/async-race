@@ -8,7 +8,7 @@ import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
 import Pagination from '../components/Pagination'
 import WinnerPopup from '../components/WinnerPopup'
-import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner, startCarEngine, driveCar } from "../common/services"
+import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner, startCarEngine, driveCar, getPage } from "../common/services"
 
 export default function Garage() {
   const [paginationPage,setPaginationPage] = useState(1)
@@ -21,12 +21,7 @@ export default function Garage() {
   const [winner, setWinner] = useState<{name:string,time:number}>({name:"",time:0})
   
   useEffect(()=>{            
-    fetch(`http://localhost:3000/garage?_page=${paginationPage}&_limit=7` , {
-      method: "GET"
-    }).then(res=>{
-      setCarCount(parseInt(res.headers.get("X-Total-Count")))
-      return res.json()
-    }).then(data => setCarStatusList(data.map((it:ICar)=> ({car:it, state:'initial'}))))    
+    refreshPage(paginationPage)
   },[paginationPage])
 
   const onGenerateCars = () => {
@@ -105,9 +100,7 @@ export default function Garage() {
     }   
    
   const refreshPage = (page:number) => {
-    fetch(`http://localhost:3000/garage?_page=${page}&_limit=7` , {
-      method: "GET"
-    })
+    getPage(page)
     .then(res=>{
       setCarCount(parseInt(res.headers.get("X-Total-Count")))
       return res.json()}

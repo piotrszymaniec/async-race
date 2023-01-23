@@ -81,3 +81,9 @@ export function startCarEngine(id:number) {
 export function driveCar(id:number) {
   return fetch(url+`engine?status=drive&id=${id}`,{method: "PATCH"})
 }
+
+export function getPage(page:number) {
+    return fetch(url+`garage?_page=${page}&_limit=7` , {
+      method: "GET"
+    }) 
+  }
