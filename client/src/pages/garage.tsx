@@ -114,7 +114,7 @@ export default function Garage() {
       <nav className="garage-menu">
         <div className="car-edit-menu">
           <CarFactoryWidget disabled={buttonsDisabledWhileRacing} onAddCar={(car) => { setCarStatusList(last => { return [...last, { car, state: 'initial' }] }) }} />
-          <CarUpdateWidget car={carForUpdate} onCarChanged={() => {
+          <CarUpdateWidget disabled={buttonsDisabledWhileRacing} car={carForUpdate} onCarChanged={() => {
             refreshPage(paginationPage)
           }} />
           <button disabled={buttonsDisabledWhileRacing} className="create-cars" onClick={() => onGenerateCars()}>CREATE MANY CARS</button>
@@ -184,6 +184,7 @@ export default function Garage() {
                     refreshPage(paginationPage)
                   })
               }}
+              carEditDisabled={buttonsDisabledWhileRacing}
               carData={car.car}
               key={car.car.id}
             />

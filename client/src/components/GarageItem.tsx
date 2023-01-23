@@ -5,6 +5,7 @@ import './garage-item.scss'
 interface IGarageItemProps {
   carData: ICar;
   start: number | string;
+  carEditDisabled: boolean
   onStart: () => void;
   onCancel: () => void;
   onRemove: () => void
@@ -19,8 +20,8 @@ export default function GarageItem(props: IGarageItemProps) {
     <div className='garage-item'>
       <div className='car-name'>{props.carData.name}</div>
       <div className='garage-item-controls'>
-        <button className='change' title='Change car details' onClick={() => props.onSelect(props.carData)}>Change 🔧</button>
-        <button className='remove' title='Remove car from garage and winners' onClick={() => props.onRemove()}>Remove ❌</button>
+        <button disabled={props.carEditDisabled} className='change' title='Change car details' onClick={() => props.onSelect(props.carData)}>Change 🔧</button>
+        <button disabled={props.carEditDisabled} className='remove' title='Remove car from garage and winners' onClick={() => props.onRemove()}>Remove ❌</button>
       </div>
       <div className='car-race-controls'>
         <button title='Start car' onClick={() => {
