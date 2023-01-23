@@ -7,7 +7,7 @@ import CarFactoryWidget from "../components/CarFactoryWidget"
 import "./garage.scss"
 import CarUpdateWidget from "../components/CarUpdateWidget"
 import Pagination from '../components/Pagination'
-import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner } from "../common/services"
+import { getWinner, removeCar, createWinner, updateWinner, createCar, removeWinner, startCarEngine, driveCar } from "../common/services"
 
 export default function Garage() {
   const [paginationPage,setPaginationPage] = useState(1)
@@ -70,10 +70,10 @@ const onGenerateCars = () => {
         return winner        
       }).then(w=>{
           const time = Math.round(500000/w.v/10)/100
-          getWinner(w.id).then(res=>{
+          return getWinner(w.id).then(res=>{
             if (res.status === 404) {
               //create new winner
-              return createWinner(w.id, 1, time)
+              return createWinner(w.id, 1, time).then(car=>{
             } else if (res.status === 200){
               return res.json().then((w1:IWinner) => updateWinner(w.id,w1.wins+1,w1.time<time?w1.time:time))
               //increment

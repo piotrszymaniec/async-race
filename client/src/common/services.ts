@@ -74,3 +74,10 @@ export function removeWinner(id:number): Promise<number> {
     method:'DELETE'
   }).then(res=>res.status)
 }
+
+export function startCarEngine(id:number) {
+  return fetch(`http://localhost:3000/engine?status=started&id=${id}`,{method: "PATCH"})
+}
+export function driveCar(id:number) {
+  return fetch(`http://localhost:3000/engine?status=drive&id=${id}`,{method: "PATCH"})
+}
